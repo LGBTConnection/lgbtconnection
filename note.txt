@@ -13,3 +13,8 @@ CODE Than chu GIT Bash
 3) git commit -m "Ghi chu"
 4) git push --force
 
+---=- ionic
+
+- Chay ionic
+ionic serve
+
