@@ -1,0 +1,15 @@
+- Link chat   page
+http://codepen.io/ethanneff/pen/yymYRR
+- codepen.io
+- git bash
+- visual code +ionic 1
+         	    +angular 1
+- kudenvat -> angular beginner
+- ionic framework tutorial
+CODE Than chu GIT Bash
+* git clone *link*
+1) git pull
+2) git add --all
+3) git commit -m "Ghi chu"
+4) git push --force
+
