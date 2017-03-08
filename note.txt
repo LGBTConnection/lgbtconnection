@@ -18,3 +18,10 @@ CODE Than chu GIT Bash
 - Chay ionic
 ionic serve
 
+-Ten bien
+Email: user.email
+Pass: user.pass
+Re-pass: user.repass
+
+
+
