@@ -1,0 +1,32 @@
+ <ion-view title="Sign-up">
+        <ion-content>
+          <div class="list">
+            <label class="item item-input"> 
+              <span class="input-label">Email</span>
+              <input type="text" ng-model="user.email">
+            </label>
+
+            <label class="item item-input">
+              <span class="input-label">Mật khẩu</span>
+              <input type="password" ng-model="user.password">
+            </label>
+
+            <label class="item item-input">
+              <span class="input-label">Nhập lại mật khẩu</span>
+              <input type="password" ng-model="user.repassword">
+            </label>
+
+            <label class = "item item-input item-select">
+            <div class = "input-label">Giới tính</div>	
+            <select>
+                <option>Nam</option>
+                <option>Nữ</option>
+            </select>
+            </label>
+          </div>
+          <div class="padding">
+            <button class="button button-block button-positive" ng-click="signup(user)">
+              Hoàn tất
+            </button>
+        </ion-content>
+     </ion-view>

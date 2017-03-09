@@ -1,0 +1,22 @@
+<ion-view view-title="Sign-In">
+        <ion-content>
+          <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Email</span>
+              <input type="email" ng-model="user.email" autofocus>
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Mật khẩu</span>
+              <input type="password" ng-model="user.password">
+            </label>
+          </div>
+          <div class="padding">
+            <button class="button button-block button-positive" ng-click="signIn(user)">
+              Đăng nhập
+            </button>
+            <p class="text-center">
+            <a href="#/sign-up">Đăng ký tài khoản</a>
+            </p>
+          </div>
+        </ion-content>
+      </ion-view>
