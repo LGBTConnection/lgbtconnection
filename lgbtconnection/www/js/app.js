@@ -37,6 +37,7 @@ angular.module('starter', ['ionic'])
       templateUrl: 'templates/SignInTemplate.html',
       controller: 'SignInCtrl'
     })
+
     .state('signup',{
       url: '/sign-up',
       templateUrl: 'templates/SignUpTemplate.html',
@@ -84,7 +85,6 @@ angular.module('starter', ['ionic'])
         }
       }
     })
-
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
@@ -110,6 +110,11 @@ angular.module('starter', ['ionic'])
 })
 .controller('SettingTabCtrl', function($scope){
 
+})
+.controller('SignOutCtrl', function($scope, $state){
+    $scope.signout  = function() {
+      $state.go('signin')
+      }
 })
 .controller('ChatCtrl', function($scope, $stateParams, $timeout, $ionicScrollDelegate){
  // alert($stateParams._idUser);

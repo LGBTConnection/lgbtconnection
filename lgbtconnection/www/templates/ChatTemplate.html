@@ -1,4 +1,4 @@
- <ion-view view-title="Chat" class="messaging-view">
+ <ion-view view-title="user.name" class="messaging-view">
     <ion-content padding="true" class="content-stable" on-tap="showTime = !showTime; focusManager.focusInputOnBlur = false;">
         <div collection-repeat="message in messages"
             ng-class="{other: message.userId == myId}" class="messages">

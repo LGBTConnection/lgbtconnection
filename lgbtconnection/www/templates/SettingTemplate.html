@@ -1,5 +1,30 @@
-<ion-view >
+<ion-view view-title="Cài đặt">    
      <ion-content>
-    Setting
+        <div class="card">
+        <div class="item item-avatar">
+            <img src="../img/logo.png">
+            <h2>Lê Tấn Phong</h2> <!-- user.name -->
+            <p>31/02/2003</p> <!-- user,date -->
+        </div>
+        </div>
+         <button class="button button-block button-assertive icon-right icon ion-android-foward">
+             Tên tài khoản
+         </button>
+         <div class="row"></div>
+         <button class="button button-block button-energized icon-right icon ion-android-foward">
+             Mật khẩu
+         </button>
+         <div class="row"></div>
+         <button class="button button-block button-balanced icon-right icon ion-android-foward">
+             Thông tin cá nhân
+         </button>
+         <div class="row"></div>
+         <button class="button button-block button-positive icon-right icon ion-android-foward">
+             Về
+         </button>
+         <div class="row"></div>
+         <button class="button button-block button-royal icon-right icon ion-android-foward" ng-controller="signOutCtrl" ng-click="signOut(user)">
+             Đăng xuất
+         </button>
      </ion-content>
 </ion-view>
