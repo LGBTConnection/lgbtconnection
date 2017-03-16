@@ -1,18 +1,20 @@
 <ion-view >
  <ion-content has-header="true">
-      <div id="profile-bg"></div>
-      <div id="content">
-        <div id="profile-info">
-          <img id="profile-image" src="">
+      <div ></div>
+      <div >
+        <div >
+          <img src="">
+          Nickname
           <h3 id="profile-name"><a href="#" editable-text="user.name">{{ user.name || "empty" }}</a></h3>
-          <h4><i class="ion ion-calendar"></i>{{ user.gender }}</h4>
-		      <h5><i class="ion ion-calendar"></i><a href="#" editable-text="user.date">{{ (user.date | date: "dd-MM-yyyy") || 'empty' }}</a></h5>
+          Gender
+          <h4>{{ user.gender }}</h4>
+          Ngày sinh
+		      <h5><a href="#" editable-text="user.date">{{ (user.date | date: "dd-MM-yyyy") || 'empty' }}</a></h5>
+          Phương châm
+          <h4><a href="#" editable-text="user.slogan">{{ user.slogan || "empty" }}</a></h4>
+          Sở thích
+          <h4><a href="#" editable-text="user.hobby">{{ user.hobby || "empty" }}</a></h4>
         </div>
-        <ion-list>
-          <ion-item ng-repeat="post in posts">
-            {{post.text}}
-          </ion-item>
-        </ion-list>
       </div>
 </ion-content>
 </ion-view>
