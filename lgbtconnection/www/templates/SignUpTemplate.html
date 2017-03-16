@@ -1,9 +1,14 @@
  <ion-view title="Đăng ký">
         <ion-content>
           <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Tên người dùng</span>
+              <input type="text" ng-model="user.name" autofocus>
+            </label>
+
             <label class="item item-input"> 
               <span class="input-label">Email</span>
-              <input type="email" ng-model="user.email" autofocus>
+              <input type="email" ng-model="user.email">
             </label>
 
             <label class="item item-input">
@@ -15,17 +20,13 @@
               <span class="input-label">Nhập lại mật khẩu</span>
               <input type="password" ng-model="user.confirmpassword">
             </label>
-            <label class="item item-input">
-              <span class="input-label">Tên người dùng</span>
-              <input type="text" ng-model="user.name">
-            </label>
             <label class = "item item-input item-select">
             <div class = "input-label">Giới tính</div>	
             <select ng-model="user.gender">
-                <option>L</option>
-                <option>G</option>
-                <option>B</option>
-                <option>T</option>
+                <option>Lesbian</option>
+                <option>Gay</option>
+                <option>Bisexual</option>
+                <option>Transgender</option>
             </select>
             </label>            
 

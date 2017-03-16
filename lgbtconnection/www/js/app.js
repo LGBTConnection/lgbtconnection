@@ -200,8 +200,20 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable'])
 .controller('FriendTabCtrl', function($scope){
 
 })
-.controller('SettingTabCtrl', function($scope){
-
+.controller('SettingTabCtrl', function($rootScope, $scope, $firebaseObject){
+      $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.userRef = $scope.ref.child($scope.uid);
+      console.log($rootScope.uid);
+      var obj = $firebaseObject($scope.userRef);
+    obj.$loaded(
+      function(data) {
+        $scope.user = data;
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
 })
 .controller('SignOutCtrl', function($scope, $state){
       
