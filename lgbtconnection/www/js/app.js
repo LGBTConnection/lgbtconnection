@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'firebase'])
+angular.module('starter', ['ionic', 'firebase', 'xeditable'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -93,10 +93,10 @@ angular.module('starter', ['ionic', 'firebase'])
         }
       }
     })
-    .state('profile', {
+    .state('tabs.profile', {
       url: '/profile',
       views: {
-        'profile': {
+        'setting-tab': {
           templateUrl: 'templates/ProfileTemplate.html',
           controller: 'ProfileTabCtrl'
         }
@@ -106,7 +106,30 @@ angular.module('starter', ['ionic', 'firebase'])
   $urlRouterProvider.otherwise('/sign-in');
 
 })
-.controller('SignInCtrl', function($scope, $state, $firebaseAuth){
+.controller('SignInCtrl', function($rootScope, $scope, $state, $firebaseAuth){
+  $scope.msg="";
+  $scope.authObj = $firebaseAuth();
+    var firebaseUser = $scope.authObj.$getAuth();
+      if (firebaseUser) {
+        console.log("Signed in as:", firebaseUser.uid);
+        $rootScope.uid = firebaseUser.uid;
+          $state.go('tabs.home');
+      } else {
+        console.log("Signed out");
+      }
+  $scope.signIn = function(user){
+    //$state.go('tabs.home');
+    $scope.authObj.$signInWithEmailAndPassword(user.email, user.password).then(function(firebaseUser) {
+        console.log("Signed in as:", firebaseUser.uid);
+        $rootScope.uid = firebaseUser.uid;
+        $state.go('tabs.home');
+      }).catch(function(error) {
+        console.error("Authentication failed:", error);
+        $scope.msg = "Wrong username or password!";
+      });
+  }
+})
+.controller('SignUpCtrl', function($rootScope, $scope, $state, $firebaseAuth, $firebaseObject){
   $scope.msg="";
   $scope.authObj = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
@@ -116,27 +139,63 @@ angular.module('starter', ['ionic', 'firebase'])
       } else {
         console.log("Signed out");
       }
-  $scope.signIn = function(user){
-    //$state.go('tabs.home');
-    $scope.authObj.$signInWithEmailAndPassword(user.email, user.password).then(function(firebaseUser) {
-        console.log("Signed in as:", firebaseUser.uid);
-        $state.go('tabs.home');
-      }).catch(function(error) {
-        console.error("Authentication failed:", error);
-        $scope.msg = "Wrong username or password!";
-      });
-  }
-})
-.controller('SignUpCtrl', function($scope){
+  
    $scope.signUp = function(user){
-    
+    if (user.password != user.confirmpassword){
+            $scope.msg = "The Passwords not match";
+        }
+        else{
+          $scope.authObj.$createUserWithEmailAndPassword(user.email, user.password)
+          .then(function(firebaseUser) {
+            console.log("User " + firebaseUser.uid + " created successfully!");
+            $scope.authObj.$signInWithEmailAndPassword(user.email, user.password).then(function(firebaseUser) {
+              console.log("Signed in as:", firebaseUser.uid);
+              $rootScope.uid = firebaseUser.uid;
+               $scope.ref = firebase.database().ref();
+                $scope.userRef = $scope.ref.child($rootScope.uid);
+                var obj = $firebaseObject($scope.userRef);
+                obj.name = user.name;
+                obj.gender = user.gender;
+                obj.date = user.date;
+                  obj.$save().then(function(ref) {
+                    
+                  }, function(error) {
+                    console.log("Error:", error);
+                  });
+              $state.go('tabs.home');
+            }).catch(function(error) {
+              console.error("Authentication failed:", error);
+              $scope.msg = "Wrong username or password!";
+            });
+          }).catch(function(error) {
+            console.error("Error: ", error);
+            $scope.msg = error.message;
+          });
+        }
   }
 })
 .controller('MainCtrl', function($scope){
   
 })
-.controller('HomeTabCtrl', function($scope){
+.controller('HomeTabCtrl', function($rootScope, $scope){
+        $scope.uid = $rootScope.uid;
 
+})
+.controller('ProfileTabCtrl', function($rootScope, $scope, $firebaseObject){
+      $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.userRef = $scope.ref.child($scope.uid);
+      console.log($rootScope.uid);
+      var obj = $firebaseObject($scope.userRef);
+    obj.$loaded(
+      function(data) {
+        //$scope.user = data;
+        obj.$bindTo($scope, "user");
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
 })
 .controller('FriendTabCtrl', function($scope){
 

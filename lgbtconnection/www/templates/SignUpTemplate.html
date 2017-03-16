@@ -15,7 +15,10 @@
               <span class="input-label">Nhập lại mật khẩu</span>
               <input type="password" ng-model="user.confirmpassword">
             </label>
-
+            <label class="item item-input">
+              <span class="input-label">Tên người dùng</span>
+              <input type="text" ng-model="user.name">
+            </label>
             <label class = "item item-input item-select">
             <div class = "input-label">Giới tính</div>	
             <select ng-model="user.gender">
@@ -31,9 +34,13 @@
               <input type="text" ng-model="user.date">
             </label>
           </div>
+          <h6 style="color: red">{{ msg }}</h6>
           <div class="padding">
-            <button class="button button-block button-positive" ng-click="signup(user)">
+            <button class="button button-block button-positive" ng-click="signUp(user)">
               Hoàn tất
             </button>
+            <p class="text-center">
+            <a href="#/sign-in">Đăng nhập</a>
+            </p>
         </ion-content>
      </ion-view>
