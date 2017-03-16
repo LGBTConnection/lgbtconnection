@@ -112,9 +112,7 @@ angular.module('starter', ['ionic'])
 
 })
 .controller('SignOutCtrl', function($scope, $state){
-    $scope.signout  = function() {
-      $state.go('signin')
-      }
+      
 })
 .controller('ChatCtrl', function($scope, $stateParams, $timeout, $ionicScrollDelegate){
  // alert($stateParams._idUser);
