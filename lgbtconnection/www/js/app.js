@@ -3,8 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var messages = ['abc','bdf'];
-angular.module('starter', ['ionic'])
+angular.module('starter', ['ionic', 'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -24,6 +23,15 @@ angular.module('starter', ['ionic'])
   });
 })
 .config(function($stateProvider, $urlRouterProvider) {
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBBBlkOxA3e8p4-TOjxbhrWFxbdnWkeIRs",
+    authDomain: "demo1-f1692.firebaseapp.com",
+    databaseURL: "https://demo1-f1692.firebaseio.com",
+    storageBucket: "demo1-f1692.appspot.com",
+    messagingSenderId: "1081933582299"
+  };
+  firebase.initializeApp(config);
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -85,13 +93,38 @@ angular.module('starter', ['ionic'])
         }
       }
     })
+    .state('profile', {
+      url: '/profile',
+      views: {
+        'profile': {
+          templateUrl: 'templates/ProfileTemplate.html',
+          controller: 'ProfileTabCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
 })
-.controller('SignInCtrl', function($scope, $state){
+.controller('SignInCtrl', function($scope, $state, $firebaseAuth){
+  $scope.msg="";
+  $scope.authObj = $firebaseAuth();
+    var firebaseUser = $scope.authObj.$getAuth();
+      if (firebaseUser) {
+        console.log("Signed in as:", firebaseUser.uid);
+          $state.go('tabs.home');
+      } else {
+        console.log("Signed out");
+      }
   $scope.signIn = function(user){
-    $state.go('tabs.home');
+    //$state.go('tabs.home');
+    $scope.authObj.$signInWithEmailAndPassword(user.email, user.password).then(function(firebaseUser) {
+        console.log("Signed in as:", firebaseUser.uid);
+        $state.go('tabs.home');
+      }).catch(function(error) {
+        console.error("Authentication failed:", error);
+        $scope.msg = "Wrong username or password!";
+      });
   }
 })
 .controller('SignUpCtrl', function($scope){
