@@ -121,3 +121,12 @@ h2{
 .title{
   font-family: 'Lobster', cursive;
 }
+.small-icon {
+background: #F0F0F0;
+border: 1px solid #979797;
+border-radius: 4px;
+  height:40px;
+  width:40px;
+  display:inline-block;
+}
+
