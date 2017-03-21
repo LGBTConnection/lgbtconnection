@@ -247,7 +247,6 @@ function deg2rad(deg) {
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
-      console.log($rootScope.uid);
       var obj = $firebaseObject($scope.userRef);
     obj.$loaded(
       function(data) {
@@ -259,7 +258,20 @@ function deg2rad(deg) {
       }
     );
 })
-.controller('FriendTabCtrl', function($scope){
+.controller('FriendTabCtrl', function($rootScope, $scope, $firebaseObject){
+    $scope.uid = $rootScope.uid;
+    $scope.ref = firebase.database().ref();
+    $scope.userRef = $scope.ref.child("friend/"+$scope.uid);
+    var list = $firebaseObject($scope.userRef);
+    list.$loaded(
+      function(data) {
+        list.$bindTo($scope, "list");
+        //console.log($scope.list_friend);
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
 
 })
 .controller('SettingTabCtrl', function($rootScope, $scope, $firebaseObject){
