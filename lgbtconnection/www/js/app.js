@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'firebase', 'xeditable'])
+angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -177,9 +177,71 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable'])
 .controller('MainCtrl', function($scope){
   
 })
-.controller('HomeTabCtrl', function($rootScope, $scope){
-        $scope.uid = $rootScope.uid;
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject){
+  function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c * 1000;
+  return d;
+}
 
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+        $scope.uid = $rootScope.uid;
+        $scope.ref = firebase.database().ref();
+        $scope.userRef = $scope.ref.child("location/"+$rootScope.uid);
+        var obj = $firebaseObject($scope.userRef);
+        $scope.findFriend = function(){
+           var posOptions = {timeout: 10000, enableHighAccuracy: false};
+            $cordovaGeolocation
+            .getCurrentPosition(posOptions)
+            
+            .then(function (position) {
+                var lat  = position.coords.latitude
+                var long = position.coords.longitude
+                //alert(lat + '   ' + long)
+                console.log(lat + '   ' + long)
+                obj.lat = lat;
+                obj.lng = long;
+                obj.$save().then(function(ref) {
+                      $scope.locationRef = $scope.ref.child("location");
+                      $scope.objLocation = $firebaseObject($scope.locationRef);
+                      $scope.objLocation.$loaded(
+                        function(data) {
+                          console.log(data);
+                      angular.forEach(data, function(value, key) {
+                          var f_lat, f_lng, distance;
+                            if (key != $scope.uid){
+                                f_lat = value.lat
+                                f_lng = value.lng
+                                distance = getDistanceFromLatLonInM(obj.lat, obj.lng, f_lat, f_lng)
+                                // Match 2 nguoi voi nhau
+                                if (distance <= 50 ){
+                                  
+                                }
+                            }
+                        });
+                        },
+                        function(error) {
+                          console.error("Error:", error);
+                        }
+                      );
+                      
+                  }, function(error) {
+                    console.log("Error:", error);
+                  });
+            }, function(err) {
+                console.log(err)
+            });
+        }
 })
 .controller('ProfileTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;
