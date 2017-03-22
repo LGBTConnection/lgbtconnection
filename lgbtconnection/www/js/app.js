@@ -125,7 +125,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         $state.go('tabs.home');
       }).catch(function(error) {
         console.error("Authentication failed:", error);
-        $scope.msg = "Wrong username or password!";
+        $scope.msg = "Sai email hoặc mật khẩu!";
       });
   }
 })
@@ -142,7 +142,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
   
    $scope.signUp = function(user){
     if (user.password != user.confirmpassword){
-            $scope.msg = "The Passwords not match";
+            $scope.msg = "Mật khẩu không khớp với nhập lại mật khẩu";
         }
         else{
           $scope.authObj.$createUserWithEmailAndPassword(user.email, user.password)
@@ -165,7 +165,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
               $state.go('tabs.home');
             }).catch(function(error) {
               console.error("Authentication failed:", error);
-              $scope.msg = "Wrong username or password!";
+              $scope.msg = "Sai email hoặc mật khẩu!";
             });
           }).catch(function(error) {
             console.error("Error: ", error);
