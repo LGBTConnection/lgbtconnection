@@ -266,7 +266,22 @@ function deg2rad(deg) {
     list.$loaded(
       function(data) {
         list.$bindTo($scope, "list");
+        $scope.list_friend = [];
         //console.log($scope.list_friend);
+        for (var item in list.list_friend){
+          var f_id = list.list_friend[item];
+          var f_name = "";
+          var tmpRef = $firebaseObject($scope.ref.child(f_id+"/name"));
+          tmpRef.$loaded(function(data){
+            f_name = data.$value;
+            console.log(f_name);
+            var tmp = {"id" : "", "name": ""};
+            tmp.id = f_id;
+            tmp.name = f_name;
+            $scope.list_friend.push(tmp);
+            console.log($scope.list_friend)
+          })
+        }
       },
       function(error) {
         console.error("Error:", error);
