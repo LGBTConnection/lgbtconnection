@@ -1,10 +1,10 @@
 <ion-view view-title="Bạn bè">
     <ion-content padding="true" class="has-header">
-     <div class="list" ng-repeat="friend_id in list.list_friend">
-            <a ng-href="#/tab/chat/{{friend_id}}">
+     <div class="list" ng-repeat="friend in list_friend">
+            <a ng-href="#/tab/chat/{{friend.id}}">
             <div class="item item-avatar">
                 <img src="../img/logo.png"> <!-- user.avt -->
-                <h2>{{ friend_id }}</h2> <!-- user.name -->
+                <h2>{{ friend.name }}</h2> <!-- user.name -->
             </div>
             </a>
      </div>
