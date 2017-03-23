@@ -177,7 +177,24 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 .controller('MainCtrl', function($scope){
   
 })
+<<<<<<< HEAD
 .controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
+=======
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject){
+  $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.userRef = $scope.ref.child($scope.uid);
+      console.log($rootScope.uid);
+      var obj = $firebaseObject($scope.userRef);
+    obj.$loaded(
+      function(data) {
+        $scope.user = data;
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
+>>>>>>> ab9a19b792271f746f233b93ee1064a9c5afc2c7
   function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -305,25 +322,29 @@ function deg2rad(deg) {
     );
 
 })
-.controller('SettingTabCtrl', function($rootScope, $scope, $firebaseObject){
+.controller('SettingTabCtrl', function($rootScope, $scope, $state,$ionicHistory, $firebaseObject){
+      $scope.signOut = function(){
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+        //now you can clear history or goto another state if you need
+        $state.go('signin');
+        console.log("Signed out")
+        
+    };
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
       console.log($rootScope.uid);
       var obj = $firebaseObject($scope.userRef);
-    obj.$loaded(
-      function(data) {
-        $scope.user = data;
-      },
-      function(error) {
-        console.error("Error:", error);
-      }
-    );
+      obj.$loaded(
+        function(data) {
+          $scope.user = data;
+        },
+        function(error) {
+          console.error("Error:", error);
+        });
 })
-.controller('SignOutCtrl', function($scope, $state){
-      
-})
-.controller('ChatCtrl', function($scope, $stateParams, $timeout, $ionicScrollDelegate){
+.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate){
  // alert($stateParams._idUser);
  $scope.showTime = true;
 

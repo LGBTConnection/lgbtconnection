@@ -3,11 +3,6 @@ body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
-h2{
-  font-family: 'Lobster', cursive;
-  font-size: 20cm;
-}
-
 /* allows the bar-footer to be elastic /*
 /* optionally set a max-height */
 /* maxlength on the textarea will prevent /*
@@ -114,14 +109,7 @@ h2{
   text-align: center;
 }
 
-.ion-android-arrow-forward{
-  text-align: left;
-  font-family: 'Roboto', 'Arial', sans-serif;
-  font-weight: bold;
-}
-.title{
-  font-family: 'Lobster', cursive;
-}
+
 .small-icon {
 background: #F0F0F0;
 border: 1px solid #979797;
@@ -130,4 +118,6 @@ border-radius: 4px;
   width:40px;
   display:inline-block;
 }
-
+.input-label{
+  text-align: left;
+}
