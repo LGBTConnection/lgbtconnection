@@ -177,7 +177,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 .controller('MainCtrl', function($scope){
   
 })
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject){
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
   function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -199,6 +199,18 @@ function deg2rad(deg) {
         $scope.ref = firebase.database().ref();
         $scope.userRef = $scope.ref.child("location/"+$rootScope.uid);
         var obj = $firebaseObject($scope.userRef);
+        $scope.friendRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
+        $scope.list_friend = $firebaseArray($scope.friendRef);
+        
+        $scope.list_friend.$loaded(
+        function(data) {
+        //list.$bindTo($scope, "list_friend");
+        console.log($scope.list_friend)
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
         $scope.findFriend = function(){
            var posOptions = {timeout: 10000, enableHighAccuracy: false};
             $cordovaGeolocation
@@ -224,8 +236,10 @@ function deg2rad(deg) {
                                 f_lng = value.lng
                                 distance = getDistanceFromLatLonInM(obj.lat, obj.lng, f_lat, f_lng)
                                 // Match 2 nguoi voi nhau
-                                if (distance <= 50 ){
-                                  
+                                if (distance <= 50 )
+                                {
+                                   $scope.list_friend.$add(key)
+                                   console.log($scope.list_friend)
                                 }
                             }
                         });
@@ -268,18 +282,20 @@ function deg2rad(deg) {
         list.$bindTo($scope, "list");
         $scope.list_friend = [];
         //console.log($scope.list_friend);
+        console.log(list.list_friend)
         for (var item in list.list_friend){
           var f_id = list.list_friend[item];
+          console.log(f_id)
           var f_name = "";
           var tmpRef = $firebaseObject($scope.ref.child(f_id+"/name"));
           tmpRef.$loaded(function(data){
             f_name = data.$value;
-            console.log(f_name);
+            //console.log(f_name);
             var tmp = {"id" : "", "name": ""};
             tmp.id = f_id;
             tmp.name = f_name;
             $scope.list_friend.push(tmp);
-            console.log($scope.list_friend)
+           // console.log($scope.list_friend)
           })
         }
       },
