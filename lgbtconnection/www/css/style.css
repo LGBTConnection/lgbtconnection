@@ -118,4 +118,6 @@ border-radius: 4px;
   width:40px;
   display:inline-block;
 }
-
+.input-label{
+  text-align: left;
+}

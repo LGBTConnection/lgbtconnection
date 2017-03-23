@@ -125,7 +125,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         $state.go('tabs.home');
       }).catch(function(error) {
         console.error("Authentication failed:", error);
-        $scope.msg = "Wrong username or password!";
+        $scope.msg = "Sai email hoặc mật khẩu!";
       });
   }
 })
@@ -142,7 +142,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
   
    $scope.signUp = function(user){
     if (user.password != user.confirmpassword){
-            $scope.msg = "The Passwords not match";
+            $scope.msg = "Mật khẩu không khớp với nhập lại mật khẩu";
         }
         else{
           $scope.authObj.$createUserWithEmailAndPassword(user.email, user.password)
@@ -165,7 +165,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
               $state.go('tabs.home');
             }).catch(function(error) {
               console.error("Authentication failed:", error);
-              $scope.msg = "Wrong username or password!";
+              $scope.msg = "Sai email hoặc mật khẩu!";
             });
           }).catch(function(error) {
             console.error("Error: ", error);
@@ -279,7 +279,22 @@ function deg2rad(deg) {
     list.$loaded(
       function(data) {
         list.$bindTo($scope, "list");
+        $scope.list_friend = [];
         //console.log($scope.list_friend);
+        for (var item in list.list_friend){
+          var f_id = list.list_friend[item];
+          var f_name = "";
+          var tmpRef = $firebaseObject($scope.ref.child(f_id+"/name"));
+          tmpRef.$loaded(function(data){
+            f_name = data.$value;
+            console.log(f_name);
+            var tmp = {"id" : "", "name": ""};
+            tmp.id = f_id;
+            tmp.name = f_name;
+            $scope.list_friend.push(tmp);
+            console.log($scope.list_friend)
+          })
+        }
       },
       function(error) {
         console.error("Error:", error);
@@ -287,10 +302,15 @@ function deg2rad(deg) {
     );
 
 })
-.controller('SettingTabCtrl', function($rootScope, $scope, $state, $firebaseObject){
+.controller('SettingTabCtrl', function($rootScope, $scope, $state,$ionicHistory, $firebaseObject){
       $scope.signOut = function(){
-        $state.go('signin')
-      }
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+        //now you can clear history or goto another state if you need
+        $state.go('signin');
+        console.log("Signed out")
+        
+    };
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
