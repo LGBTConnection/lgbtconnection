@@ -177,10 +177,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 .controller('MainCtrl', function($scope){
   
 })
-<<<<<<< HEAD
 .controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
-=======
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject){
   $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -194,7 +191,6 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         console.error("Error:", error);
       }
     );
->>>>>>> ab9a19b792271f746f233b93ee1064a9c5afc2c7
   function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -305,7 +301,15 @@ function deg2rad(deg) {
           console.log(f_id)
           var f_name = "";
           var tmpRef = $firebaseObject($scope.ref.child(f_id+"/name"));
-          tmpRef.$loaded(function(data){
+          loadFriend(tmpRef, f_id);
+        }
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
+    loadFriend = function (tmpRef, f_id){
+      tmpRef.$loaded(function(data){
             f_name = data.$value;
             //console.log(f_name);
             var tmp = {"id" : "", "name": ""};
@@ -314,13 +318,7 @@ function deg2rad(deg) {
             $scope.list_friend.push(tmp);
            // console.log($scope.list_friend)
           })
-        }
-      },
-      function(error) {
-        console.error("Error:", error);
-      }
-    );
-
+    }
 })
 .controller('SettingTabCtrl', function($rootScope, $scope, $state,$ionicHistory, $firebaseObject){
       $scope.signOut = function(){
@@ -344,8 +342,15 @@ function deg2rad(deg) {
           console.error("Error:", error);
         });
 })
-.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate){
+.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate, $firebaseArray, $firebaseObject){
  // alert($stateParams._idUser);
+ $scope.uid = $rootScope.uid;
+ $scope.ref = firebase.database().ref();
+ $scope.userRef = $scope.ref.child($scope.uid);
+ var obj = $firebaseObject($scope.userRef);
+ var list = $firebaseArray($scope.userRef)
+ list.$add("list_chat")
+ 
  $scope.showTime = true;
 
   $scope.focusManager = { focusInputOnBlur: true };
