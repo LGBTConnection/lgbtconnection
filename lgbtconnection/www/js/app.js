@@ -320,15 +320,14 @@ function deg2rad(deg) {
           })
     }
 })
-.controller('SettingTabCtrl', function($rootScope, $scope, $state,$ionicHistory, $firebaseObject){
+.controller('SettingTabCtrl', function($rootScope, $scope, $state, $ionicHistory, $firebaseAuth, $firebaseObject){
       $scope.signOut = function(){
         $ionicHistory.clearCache();
-        $ionicHistory.clearHistory();
+        $ionicHistory.clearHistory();     
         //now you can clear history or goto another state if you need
         $state.go('signin');
-        console.log("Signed out")
-        
-    };
+        console.log("Signed out");
+      }   
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -344,12 +343,7 @@ function deg2rad(deg) {
 })
 .controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate, $firebaseArray, $firebaseObject){
  // alert($stateParams._idUser);
- $scope.uid = $rootScope.uid;
- $scope.ref = firebase.database().ref();
- $scope.userRef = $scope.ref.child($scope.uid);
- var obj = $firebaseObject($scope.userRef);
- var list = $firebaseArray($scope.userRef)
- list.$add("list_chat")
+
  
  $scope.showTime = true;
 
@@ -384,7 +378,18 @@ function deg2rad(deg) {
     $ionicScrollDelegate.scrollBottom(true);
 
   };
-
+$scope.uid = $rootScope.uid;
+ //console.log($scope.uid)
+ //console.log($stateParams._idUser)
+ $scope.ref = firebase.database().ref();
+ $scope.userRef = $scope.ref.child($scope.uid);
+ var obj = $firebaseObject($scope.userRef);
+ var list = $firebaseArray($scope.userRef)
+ list.$add({ list_chat : $stateParams._idUser }).then(function(ref) {
+  var id = ref.key;
+  console.log("added record with id " + id);
+  list.$indexFor(id); // returns location in the array
+});
 
   $scope.data = {};
   $scope.myId = '12345';
