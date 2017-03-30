@@ -1,0 +1,38 @@
+$scope.showTime = true;
+
+  $scope.focusManager = { focusInputOnBlur: true };
+
+  var alternate;
+
+
+  $scope.getItemHeight = function(event) {
+    console.log('getItemHeight', event);
+    return 300;
+  }
+
+  $scope.sendMessage = function() {
+    alternate = !alternate;
+
+    var d = new Date();
+    d = d.toLocaleTimeString().replace(/:\d+ /, ' ');
+
+    $scope.messages.push({
+      userId: '12345',
+      text: $scope.data.message,
+      time: d
+    });
+    $scope.messages.push({
+        userId: $stateParams._idUser,
+        text: $scope.data.message + " Guest",
+        time: d
+    })
+
+    delete $scope.data.message;
+    $ionicScrollDelegate.scrollBottom(true);
+
+  };
+
+
+  $scope.data = {};
+  $scope.myId = '12345';
+  $scope.messages = [];

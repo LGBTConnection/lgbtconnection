@@ -343,55 +343,24 @@ function deg2rad(deg) {
 })
 .controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate, $firebaseArray, $firebaseObject){
  // alert($stateParams._idUser);
-
- 
- $scope.showTime = true;
-
-  $scope.focusManager = { focusInputOnBlur: true };
-
-  var alternate;
-
-
-  $scope.getItemHeight = function(event) {
-    console.log('getItemHeight', event);
-    return 300;
-  }
-
-  $scope.sendMessage = function() {
-    alternate = !alternate;
-
-    var d = new Date();
-    d = d.toLocaleTimeString().replace(/:\d+ /, ' ');
-
-    $scope.messages.push({
-      userId: '12345',
-      text: $scope.data.message,
-      time: d
-    });
-    $scope.messages.push({
-        userId: $stateParams._idUser,
-        text: $scope.data.message + " Guest",
-        time: d
-    })
-
-    delete $scope.data.message;
-    $ionicScrollDelegate.scrollBottom(true);
-
-  };
 $scope.uid = $rootScope.uid;
- //console.log($scope.uid)
- //console.log($stateParams._idUser)
  $scope.ref = firebase.database().ref();
  $scope.userRef = $scope.ref.child($scope.uid);
+ var list_chat = $scope.ref.child($scope.uid+"/list_chat")
  var obj = $firebaseObject($scope.userRef);
- var list = $firebaseArray($scope.userRef)
- list.$add({ list_chat : $stateParams._idUser }).then(function(ref) {
-  var id = ref.key;
-  console.log("added record with id " + id);
-  list.$indexFor(id); // returns location in the array
-});
-
-  $scope.data = {};
-  $scope.myId = '12345';
-  $scope.messages = [];
+ var list = $firebaseArray(list_chat)
+    list.$add($stateParams._idUser).then(function(ref) {
+        var id = ref.key;
+        console.log("added record with id " + id);
+        list.$indexFor(id); // returns location in the array
+      });
+    list.$loaded(
+      function(data) {
+      },
+        //console.log($scope.list_friend);        
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
+ 
 })
