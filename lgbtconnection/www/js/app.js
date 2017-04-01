@@ -102,6 +102,15 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
+    .state('tabs.question', {
+      url: '/question',
+      views: {
+        'setting-tab': {
+          templateUrl: 'templates/QuestionTemplate.html',
+          controller: 'QuestionTabCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
@@ -285,6 +294,21 @@ function deg2rad(deg) {
       }
     );
 })
+.controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){
+      $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.userRef = $scope.ref.child($scope.uid);
+      var obj = $firebaseObject($scope.userRef);
+    obj.$loaded(
+      function(data) {
+        //$scope.user = data;
+        obj.$bindTo($scope, "user");
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
+})
 .controller('FriendTabCtrl', function($rootScope, $scope, $firebaseObject){
     $scope.uid = $rootScope.uid;
     $scope.ref = firebase.database().ref();
@@ -325,8 +349,11 @@ function deg2rad(deg) {
         $ionicHistory.clearCache();
         $ionicHistory.clearHistory();     
         //now you can clear history or goto another state if you need
-        $state.go('signin');
+        $state.go('signin');}
         console.log("Signed out");
+       $scope.setQuestion = function(){
+        $state.go('tabs.question');
+        console.log("Go to QuestionTemplate");         
       }   
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
