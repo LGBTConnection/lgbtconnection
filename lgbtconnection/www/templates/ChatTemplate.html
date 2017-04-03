@@ -1,5 +1,5 @@
  <ion-view view-title=" {{ user.name }} " class="messaging-view">
-    <ion-content padding="true" class="content-stable" on-tap="showTime = !showTime; focusManager.focusInputOnBlur = false;">
+    <ion-content padding="true" class="content-stable" on-tap="showTime = !showTime; focusManager.focusInputOnBlur = false;" class="padding has-subheader">
         <div collection-repeat="message in messages"
             ng-class="{other: message.userId == myId}" class="messages">
             <div class="message" ng-class="{'slide-right': showTime, '': !showTime}">

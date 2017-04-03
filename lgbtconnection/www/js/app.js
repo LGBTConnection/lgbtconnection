@@ -373,21 +373,63 @@ function deg2rad(deg) {
 $scope.uid = $rootScope.uid;
  $scope.ref = firebase.database().ref();
  $scope.userRef = $scope.ref.child($scope.uid);
- var list_chat = $scope.ref.child($scope.uid+"/list_chat")
+ var list_chat = $scope.ref.child("chat"+$stateParams._idUser+"/message")
  var obj = $firebaseObject($scope.userRef);
- var list = $firebaseArray(list_chat)
-    list.$add($stateParams._idUser).then(function(ref) {
-        var id = ref.key;
-        console.log("added record with id " + id);
-        list.$indexFor(id); // returns location in the array
-      });
+ var list = $firebaseArray(list_chat);
     list.$loaded(
       function(data) {
+        
       },
         //console.log($scope.list_friend);        
       function(error) {
         console.error("Error:", error);
       }
     );
- 
+ $scope.showTime = true;
+
+  $scope.focusManager = { focusInputOnBlur: true };
+
+  var alternate;
+
+
+  $scope.getItemHeight = function(event) {
+    console.log('getItemHeight', event);
+    return 300;
+  }
+
+  $scope.sendMessage = function() {
+    alternate = !alternate;
+
+    var d = new Date();
+    d = d.toLocaleTimeString().replace(/:\d+ /, ' ');
+
+    $scope.messages.push({
+      userId: $scope.uid,
+      text: $scope.data.message,
+      time: d,
+    }),
+      obj.$loaded(
+        function(data) {
+          $scope.user = data;
+          var name = $scope.user.name;
+          var message = $scope.ref.child("chat"+"/"+$stateParams._idUser+"/message");
+          var message_array = $firebaseArray(message)
+          message_array.$add({ name: name, message: $scope.data.message});
+        },
+        function(error) {
+          console.error("Error:", error);
+        });        
+    $scope.messages.push({
+        userId: $stateParams._idUser,
+        text: $scope.data.message + " Guest",
+        time: d
+    }),
+    delete $scope.data.message
+    $ionicScrollDelegate.scrollBottom(true);
+};
+
+
+  $scope.data = {};
+  $scope.myId = '12345';
+  $scope.messages = [];
 })
