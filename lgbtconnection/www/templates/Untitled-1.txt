@@ -1,10 +1,9 @@
  <ion-view view-title=" {{ user.name }} " class="messaging-view">
-    <ion-content padding="true" class="content-stable"  class="padding has-subheader">
-        <div collection-repeat="message in arrChat"
-        ng-class="{other: message.id == uid}"
-             class="messages">
+    <ion-content padding="true" class="content-stable" on-tap="showTime = !showTime; focusManager.focusInputOnBlur = false;" class="padding has-subheader">
+        <div collection-repeat="message in messages"
+            ng-class="{other: message.userId == myId}" class="messages">
             <div class="message" ng-class="{'slide-right': showTime, '': !showTime}">
-                <span collection-height="message.message" item-width="'100%'">{{ message.message }}</span>
+                <span collection-height="message.text" item-width="'100%'">{{ message.text }}</span>
             </div>
         </div>
     </ion-content>

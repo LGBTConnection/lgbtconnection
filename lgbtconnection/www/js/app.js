@@ -371,13 +371,25 @@ function deg2rad(deg) {
 .controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate, $firebaseArray, $firebaseObject){
  // alert($stateParams._idUser);
 $scope.uid = $rootScope.uid;
+$scope.friend_id = $stateParams._idUser;
  $scope.ref = firebase.database().ref();
- $scope.userRef = $scope.ref.child($scope.uid);
- var list_chat = $scope.ref.child("chat"+$stateParams._idUser+"/message")
- var obj = $firebaseObject($scope.userRef);
- var list = $firebaseArray(list_chat);
+
+ var list_chat = $scope.ref.child($scope.uid+"/list_chat/"+$scope.friend_id);
+ console.log($scope.uid+"/list_chat/"+$scope.friend_id)
+ //var obj = $firebaseObject($scope.userRef);
+ var list = $firebaseObject(list_chat);
     list.$loaded(
       function(data) {
+        var id_chat = data.$value;
+      $scope.arrChat = $scope.ref.child("chat/"+id_chat+"/messages");
+      $scope.arrChat = $firebaseArray($scope.arrChat);
+      $scope.arrChat.$loaded(
+        function(data) {
+          console.log(data);
+        },
+        function(error) {
+          console.error("Error:", error);
+        }); 
         
       },
         //console.log($scope.list_friend);        
@@ -385,7 +397,7 @@ $scope.uid = $rootScope.uid;
         console.error("Error:", error);
       }
     );
- $scope.showTime = true;
+/* $scope.showTime = true;
 
   $scope.focusManager = { focusInputOnBlur: true };
 
@@ -396,40 +408,36 @@ $scope.uid = $rootScope.uid;
     console.log('getItemHeight', event);
     return 300;
   }
-
+*/$scope.showTime = true;
   $scope.sendMessage = function() {
-    alternate = !alternate;
 
-    var d = new Date();
-    d = d.toLocaleTimeString().replace(/:\d+ /, ' ');
 
-    $scope.messages.push({
-      userId: $scope.uid,
-      text: $scope.data.message,
-      time: d,
-    }),
-      obj.$loaded(
-        function(data) {
-          $scope.user = data;
-          var name = $scope.user.name;
-          var message = $scope.ref.child("chat"+"/"+$stateParams._idUser+"/message");
-          var message_array = $firebaseArray(message)
-          message_array.$add({ name: name, message: $scope.data.message});
-        },
-        function(error) {
-          console.error("Error:", error);
-        });        
-    $scope.messages.push({
+ /*   $scope.arrChat.$add(
+      {
+        id : $scope.uid,
+        message : $scope.data.message
+      }
+    ).then(function(ref) {
+  var id = ref.key;
+  console.log("added record with id " + id);
+
+});*/
+$scope.arrChat.push({
+  id : $scope.uid,
+  message : $scope.data.message
+})
+  }
+             
+    /*$scope.messages.push({
         userId: $stateParams._idUser,
         text: $scope.data.message + " Guest",
         time: d
-    }),
+    })*/
     delete $scope.data.message
     $ionicScrollDelegate.scrollBottom(true);
-};
+
 
 
   $scope.data = {};
-  $scope.myId = '12345';
   $scope.messages = [];
 })
