@@ -183,7 +183,23 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
   }
 })
-.controller('MainCtrl', function($scope){
+.controller('MainCtrl', function($scope, $firebaseArray){
+  //
+var tmp = firebase.database().ref().child("chat/-KfvFZ_N7JQ8XJQp45C_/messages")
+var tmpArr = $firebaseArray(tmp);
+tmpArr.$add(
+          {
+            id : "$scope.uid",
+            message : "$scope.data.message"
+          }
+).then(function(ref){
+                                var id=ref.key;
+                                 console.log("added record with id " + id);
+                            }).catch(function(err){
+                                alert("Loi");
+                                console.error(err);
+                            })
+//
   
 })
 .controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
@@ -348,8 +364,13 @@ function deg2rad(deg) {
       $scope.signOut = function(){
         $ionicHistory.clearCache();
         $ionicHistory.clearHistory();     
+        $scope.authObj = $firebaseAuth();
+        $scope.authObj.$signOut();
         //now you can clear history or goto another state if you need
-        $state.go('signin');}
+        $state.go('signin');
+      $window.location.reload(true)
+      //$state.go($state.current, {}, {reload: true});
+      }
         console.log("Signed out");
        $scope.setQuestion = function(){
         $state.go('tabs.question');
@@ -368,22 +389,32 @@ function deg2rad(deg) {
           console.error("Error:", error);
         });
 })
-.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $timeout, $ionicScrollDelegate, $firebaseArray, $firebaseObject){
- // alert($stateParams._idUser);
+.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $firebaseArray, $firebaseObject){
+//
+var tmp = firebase.database().ref().child("chat/-KfvFZ_N7JQ8XJQp45C_/messages")
+var tmpArr = $firebaseArray(tmp);
+tmpArr.$add(
+          {
+            id : "$scope.uid",
+            message : "$scope.data.message"
+          }
+)
+//
+
+
 $scope.uid = $rootScope.uid;
 $scope.friend_id = $stateParams._idUser;
  $scope.ref = firebase.database().ref();
-
  var list_chat = $scope.ref.child($scope.uid+"/list_chat/"+$scope.friend_id);
- console.log($scope.uid+"/list_chat/"+$scope.friend_id)
- //var obj = $firebaseObject($scope.userRef);
  var list = $firebaseObject(list_chat);
+ var chatRef;
+ var chatArr;
     list.$loaded(
       function(data) {
-        var id_chat = data.$value;
-      $scope.arrChat = $scope.ref.child("chat/"+id_chat+"/messages");
-      $scope.arrChat = $firebaseArray($scope.arrChat);
-      $scope.arrChat.$loaded(
+      var id_chat = data.$value;
+      chatRef = $scope.ref.child("chat/"+id_chat+"/messages");
+      chatArr = $firebaseArray(chatRef);
+      chatArr.$loaded(
         function(data) {
           console.log(data);
         },
@@ -391,53 +422,24 @@ $scope.friend_id = $stateParams._idUser;
           console.error("Error:", error);
         }); 
         
-      },
-        //console.log($scope.list_friend);        
+      },    
       function(error) {
         console.error("Error:", error);
       }
     );
-/* $scope.showTime = true;
-
-  $scope.focusManager = { focusInputOnBlur: true };
-
-  var alternate;
-
-
-  $scope.getItemHeight = function(event) {
-    console.log('getItemHeight', event);
-    return 300;
-  }
-*/$scope.showTime = true;
+$scope.showTime = true;
   $scope.sendMessage = function() {
-
-
- /*   $scope.arrChat.$add(
-      {
-        id : $scope.uid,
-        message : $scope.data.message
-      }
-    ).then(function(ref) {
-  var id = ref.key;
-  console.log("added record with id " + id);
-
-});*/
-$scope.arrChat.push({
-  id : $scope.uid,
-  message : $scope.data.message
-})
-  }
-             
-    /*$scope.messages.push({
-        userId: $stateParams._idUser,
-        text: $scope.data.message + " Guest",
-        time: d
-    })*/
-    delete $scope.data.message
-    $ionicScrollDelegate.scrollBottom(true);
-
-
-
+    chatArr.$add(
+          {
+            id : $scope.uid,
+            message : $scope.data.message
+          }
+        ).then(function(ref) {
+          console.log(ref);
+          $scope.data.message = "";
+    });
+   // $ionicScrollDelegate.scrollBottom();
+}
   $scope.data = {};
   $scope.messages = [];
 })

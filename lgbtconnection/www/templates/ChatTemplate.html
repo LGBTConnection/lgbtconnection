@@ -1,6 +1,6 @@
  <ion-view view-title=" {{ user.name }} " class="messaging-view">
-    <ion-content padding="true" class="content-stable"  class="padding has-subheader">
-        <div collection-repeat="message in arrChat"
+    <ion-content padding="true" class="content-stable">
+        <div collection-repeat="message in arr"
         ng-class="{other: message.id == uid}"
              class="messages">
             <div class="message" ng-class="{'slide-right': showTime, '': !showTime}">
@@ -10,7 +10,7 @@
     </ion-content>
     <ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
         <label class="item-input-wrapper">
-            <input type="text" placeholder="Nhập tin nhắn" on-return="sendMessage();" ng-model="data.message" on-focus="inputUp()" on-blur="inputDown()" focus-on-blur="focusManager.focusInputOnBlur" />
+            <input type="text" placeholder="Nhập tin nhắn" on-return="sendMessage();" ng-model="data.message"  />
         </label>
         <button class="button button-clear" ng-disabled="!data.message || data.message === ''" ng-click="sendMessage()">
             Gửi
