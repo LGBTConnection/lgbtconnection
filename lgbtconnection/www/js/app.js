@@ -183,24 +183,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
   }
 })
-.controller('MainCtrl', function($scope, $firebaseArray){
-  //
-var tmp = firebase.database().ref().child("chat/-KfvFZ_N7JQ8XJQp45C_/messages")
-var tmpArr = $firebaseArray(tmp);
-tmpArr.$add(
-          {
-            id : "$scope.uid",
-            message : "$scope.data.message"
-          }
-).then(function(ref){
-                                var id=ref.key;
-                                 console.log("added record with id " + id);
-                            }).catch(function(err){
-                                alert("Loi");
-                                console.error(err);
-                            })
-//
-  
+.controller('MainCtrl', function($scope, $firebaseArray){ 
 })
 .controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
   $scope.uid = $rootScope.uid;
@@ -360,15 +343,16 @@ function deg2rad(deg) {
           })
     }
 })
-.controller('SettingTabCtrl', function($rootScope, $scope, $state, $ionicHistory, $firebaseAuth, $firebaseObject){
+.controller('SettingTabCtrl', function($rootScope, $scope, $state, $ionicHistory, $firebaseAuth, $firebaseObject, $window){
       $scope.signOut = function(){
         $ionicHistory.clearCache();
         $ionicHistory.clearHistory();     
         $scope.authObj = $firebaseAuth();
         $scope.authObj.$signOut();
         //now you can clear history or goto another state if you need
+            $window.location.reload(true)
         $state.go('signin');
-      $window.location.reload(true)
+  
       //$state.go($state.current, {}, {reload: true});
       }
         console.log("Signed out");
@@ -390,32 +374,19 @@ function deg2rad(deg) {
         });
 })
 .controller('ChatCtrl', function($rootScope, $scope, $stateParams, $firebaseArray, $firebaseObject){
-//
-var tmp = firebase.database().ref().child("chat/-KfvFZ_N7JQ8XJQp45C_/messages")
-var tmpArr = $firebaseArray(tmp);
-tmpArr.$add(
-          {
-            id : "$scope.uid",
-            message : "$scope.data.message"
-          }
-)
-//
-
-
 $scope.uid = $rootScope.uid;
 $scope.friend_id = $stateParams._idUser;
  $scope.ref = firebase.database().ref();
  var list_chat = $scope.ref.child($scope.uid+"/list_chat/"+$scope.friend_id);
  var list = $firebaseObject(list_chat);
- var chatRef;
- var chatArr;
     list.$loaded(
       function(data) {
       var id_chat = data.$value;
-      chatRef = $scope.ref.child("chat/"+id_chat+"/messages");
-      chatArr = $firebaseArray(chatRef);
-      chatArr.$loaded(
+      $scope.chatRef = $scope.ref.child("chat/"+id_chat+"/messages");
+      $scope.chatArr = $firebaseArray($scope.chatRef);
+      $scope.chatArr.$loaded(
         function(data) {
+          $scope.massages = data;
           console.log(data);
         },
         function(error) {
@@ -429,7 +400,7 @@ $scope.friend_id = $stateParams._idUser;
     );
 $scope.showTime = true;
   $scope.sendMessage = function() {
-    chatArr.$add(
+    $scope.chatArr.$add(
           {
             id : $scope.uid,
             message : $scope.data.message
