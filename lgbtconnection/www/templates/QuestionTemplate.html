@@ -1,23 +1,9 @@
-<ion-view view-title="Cài đặt">    
-     <ion-content>
-        <div class="card">
-        <div class="item item-avatar">
-            <img src="../img/logo.png" >
-            <h2>{{ user.name }}</h2> <!-- user.name -->
-            <p>{{ user.date }}</p> <!-- user.date -->
-        </div>
-        </div>
-        <div class="card">
-        <div class="item item-text-wrap">
-        <i class="icon ion-help" > </i>
-        Câu hỏi: <a href="#" editable-text="user.slogan"> {{ user.question || "empty" }}</a>
-        </div>
-        </div>
-         <div class="card">
-        <div class="item item-text-wrap">
-        <i class="icon ion-forward" > </i>
-        Câu trả lời: <a href="#" editable-text="user.slogan"> {{ user.answer || "empty" }}</a>
-        </div>
-        </div>
+<ion-view view-title="Câu hỏi">    
+     <ion-content>            
+        <div class="list" ng-repeat="friend in list_friend">
+            <div class="item item-avatar">
+                <h2>{{ friend.name }}</h2> <!-- user.name -->
+            </div>
+     </div>                
      </ion-content>
 </ion-view>

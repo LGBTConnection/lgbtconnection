@@ -135,6 +135,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
       }).catch(function(error) {
         console.error("Authentication failed:", error);
         $scope.msg = "Sai email hoặc mật khẩu!";
+        $scope.msg = error;
       });
   }
 })
@@ -296,17 +297,48 @@ function deg2rad(deg) {
 .controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
-      $scope.userRef = $scope.ref.child($scope.uid);
-      var obj = $firebaseObject($scope.userRef);
-    obj.$loaded(
-      function(data) {
-        //$scope.user = data;
-        obj.$bindTo($scope, "user");
-      },
-      function(error) {
-        console.error("Error:", error);
+      $scope.userRef = $scope.ref.child("questions/"+$scope.uid);
+      $scope_uid = $scope.uid;
+      var list = $firebaseObject($scope.userRef);
+      list.$loaded(
+        function(data) {
+          list.$bindTo($scope, "list");
+          for (var item in list.scope_uid){
+            var f_id = list.scope_uid[item];
+            console.log(f_id)
+            var f_name = "";
+            var tmpRef = $firebaseObject($scope.ref.child(f_id+"/"+"/ques"));
+            loadFriend(tmpRef, f_id);
+          }
+        },
+        function(error) {
+          console.error("Error:", error);
+        }
+      );
+      loadFriend = function (tmpRef, f_id){
+        tmpRef.$loaded(function(data){
+              f_name = data.$value;
+              //console.log(f_name);
+              var tmp = {"name": ""};
+              tmp.name = f_name;
+              $scope.list_friend.push(tmp);
+            // console.log($scope.list_friend)
+            })
       }
-    );
+        $scope.data = [
+            {
+              name: "AiA",
+              code: "AI101",
+              limit: 25000,
+              account: "Life Insurance"
+            },
+            {
+              name: "Cargills",
+              code: "CF001",
+              limit: 30000,
+              account: "Food City"
+            }
+          ]
 })
 .controller('FriendTabCtrl', function($rootScope, $scope, $firebaseObject){
     $scope.uid = $rootScope.uid;

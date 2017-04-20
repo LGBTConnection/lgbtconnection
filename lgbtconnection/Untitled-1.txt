@@ -1,0 +1,10 @@
+<div class="row header">
+          <div class="col">Utility Company Name</div>
+          <div class="col">Service Code</div>
+          <div class="col"></div>
+        </div>
+        <div class="row" ng-repeat="data in data">
+          <div class="col">{{data.name}}</div>
+          <div class="col">{{data.code}}</div>
+          <div class="col"><button class="button" ng-click="ctrl.add($index)">Add</button></div>
+        </div>
