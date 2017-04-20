@@ -122,7 +122,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
       if (firebaseUser) {
         console.log("Signed in as:", firebaseUser.uid);
         $rootScope.uid = firebaseUser.uid;
-          $state.go('tabs.home');
+        $state.go('tabs.home');
       } else {
         console.log("Signed out");
       }
@@ -409,6 +409,19 @@ function deg2rad(deg) {
 $scope.uid = $rootScope.uid;
 $scope.friend_id = $stateParams._idUser;
  $scope.ref = firebase.database().ref();
+ $scope.friendRef = $scope.ref.child($scope.friend_id);
+      var obj = $firebaseObject($scope.friendRef);
+      obj.$loaded(
+        function(data) {
+          $scope.friendname = data.name;
+        },
+        function(error) {
+          console.error("Error:", error);
+        });
+var friendchat = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
+friendchat = $firebaseArray(friendchat);
+var key = friendchat.$keyAt($scope.friend_id)
+console.log(key)
  var list_chat = $scope.ref.child($scope.uid+"/list_chat/"+$scope.friend_id);
  var list = $firebaseObject(list_chat);
     list.$loaded(
@@ -418,7 +431,7 @@ $scope.friend_id = $stateParams._idUser;
       $scope.chatArr = $firebaseArray($scope.chatRef);
       $scope.chatArr.$loaded(
         function(data) {
-          $scope.massages = data;
+          $scope.messages = data;
           console.log(data);
         },
         function(error) {
@@ -441,7 +454,7 @@ $scope.showTime = true;
           console.log(ref);
           $scope.data.message = "";
     });
-   // $ionicScrollDelegate.scrollBottom();
+   $ionicScrollDelegate.scrollBottom();
 }
   $scope.data = {};
   $scope.messages = [];

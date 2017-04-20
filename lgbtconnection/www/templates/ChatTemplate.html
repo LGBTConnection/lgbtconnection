@@ -1,4 +1,4 @@
- <ion-view view-title=" {{ user.name }} " class="messaging-view">
+ <ion-view view-title="{{ friendname }}" class="messaging-view"> 
     <ion-content padding="true" class="content-stable">
         <div collection-repeat="message in messages"
         ng-class="{other: message.id == uid}"
