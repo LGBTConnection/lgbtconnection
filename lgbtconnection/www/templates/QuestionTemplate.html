@@ -1,9 +1,22 @@
-<ion-view view-title="Câu hỏi">    
-     <ion-content>            
-        <div class="list" ng-repeat="friend in list_friend">
-            <div class="item item-avatar">
-                <h2>{{ friend.name }}</h2> <!-- user.name -->
+<ion-view view-title="Câu hỏi">          
+    <ion-content padding="true" class="has-header">
+        <div class="row header">
+          <div class="col col-75">Câu hỏi</div>
+          <div class="col"></div>
+        </div>
+        <div class="row" ng-repeat="item in questions.list_ques">
+            <div class="col col-75">
+                <a href="#/tab/question/{{ $index }}">
+                <span editable-text="item.ques" e-name="ques" e-form="rowform">
+                    {{ item.ques || 'empty' }}
+                </span>
+                </a>
             </div>
-     </div>                
-     </ion-content>
+            <div class="col">
+                <button class="button icon icon-left ion-edit" ng-click="rowform.$show()">Sửa</button>
+                <button class="button icon icon-left ion-backspace" ng-click="removeQues($index)">Xóa</button>
+            </div>
+        </div>
+        <button class="button icon icon-left ion-plus" ng-click="addQues()">Thêm câu hỏi</button>
+    </ion-content>
 </ion-view>

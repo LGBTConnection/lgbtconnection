@@ -1,0 +1,26 @@
+ <ion-view view-title=""> 
+    <ion-content padding="true" class="content-stable">
+        <div class="row header">
+          <div class="col col-60">Câu trả lời</div>
+          <div class="col col-15"></div>
+          <div class="col"></div>
+        </div>
+        <div class="row" ng-repeat="item in ques.ans">
+            <div class="col col-60">
+                <span editable-text="item.content" e-name="content" e-form="rowform">
+                    {{ item.content || 'empty' }}
+                </span>
+            </div>
+            <div class="col col-15">
+                <a href="#" editable-checkbox="item.isRight" e-name="isRight" e-title="Đúng?">
+                    {{ items.isRight && "Đúng" || "Sai" }}
+                </a>
+            </div>
+            <div class="col">
+                <button class="button icon icon-left ion-edit" ng-click="rowform.$show()">Sửa</button>
+                <button class="button icon icon-left ion-backspace" ng-click="removeAns($index)">Xóa</button>
+            </div>
+        </div>
+        <button class="button icon icon-left ion-plus" ng-click="addAns()">Thêm câu trả lời</button>
+    </ion-content>
+</ion-view>

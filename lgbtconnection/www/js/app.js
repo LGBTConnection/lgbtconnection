@@ -111,6 +111,15 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
+    .state('tabs.answer',{
+      url: '/question/:_idQues',
+      views: {
+        'setting-tab':{
+          templateUrl: 'templates/AnswerTemplate.html',
+          controller: 'AnswerTabCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
@@ -298,47 +307,48 @@ function deg2rad(deg) {
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child("questions/"+$scope.uid);
-      $scope_uid = $scope.uid;
-      var list = $firebaseObject($scope.userRef);
-      list.$loaded(
-        function(data) {
-          list.$bindTo($scope, "list");
-          for (var item in list.scope_uid){
-            var f_id = list.scope_uid[item];
-            console.log(f_id)
-            var f_name = "";
-            var tmpRef = $firebaseObject($scope.ref.child(f_id+"/"+"/ques"));
-            loadFriend(tmpRef, f_id);
-          }
-        },
-        function(error) {
-          console.error("Error:", error);
-        }
-      );
-      loadFriend = function (tmpRef, f_id){
-        tmpRef.$loaded(function(data){
-              f_name = data.$value;
-              //console.log(f_name);
-              var tmp = {"name": ""};
-              tmp.name = f_name;
-              $scope.list_friend.push(tmp);
-            // console.log($scope.list_friend)
-            })
-      }
-        $scope.data = [
-            {
-              name: "AiA",
-              code: "AI101",
-              limit: 25000,
-              account: "Life Insurance"
-            },
-            {
-              name: "Cargills",
-              code: "CF001",
-              limit: 30000,
-              account: "Food City"
-            }
-          ]
+      var obj = $firebaseObject($scope.userRef)
+      obj.$loaded().then(function() {
+        $scope.questions = obj;
+        obj.$bindTo($scope, "questions");
+     });
+      $scope.addQues = function() {
+        if (!$scope.questions.list_ques) $scope.questions.list_ques = [];
+        $scope.inserted = {
+          ques: '',
+          ans: []
+        };
+        console.log($scope.questions.list_ques)
+        $scope.questions.list_ques.push($scope.inserted);
+    };
+    $scope.removeQues = function(index) {
+      $scope.questions.list_ques.splice(index, 1);
+    };
+})
+.controller('AnswerTabCtrl', function($rootScope, $scope, $stateParams, $firebaseObject){
+    $scope.uid = $rootScope.uid;
+    $scope.ref = firebase.database().ref();
+    $scope.idQues = $stateParams._idQues;
+    $scope.userRef = $scope.ref.child("questions/"+$scope.uid+"/list_ques/"+$scope.idQues);
+    console.log("questions/"+$scope.uid+"/list_ques/"+$scope.idQues)
+    var obj = $firebaseObject($scope.userRef);
+    obj.$loaded().then(function(){
+      $scope.ques = obj;
+      obj.$bindTo($scope, "ques")
+    },function(error){
+      console.log(error)
+    })
+    $scope.addAns = function() {
+        if (!$scope.ques.ans) $scope.ques.ans = [];
+        $scope.inserted = {
+          content: '',
+          isRight: false
+        };
+        $scope.ques.ans.push($scope.inserted);
+    };
+    $scope.removeAns = function(index) {
+      $scope.ques.ans.splice(index, 1);
+    };
 })
 .controller('FriendTabCtrl', function($rootScope, $scope, $firebaseObject){
     $scope.uid = $rootScope.uid;

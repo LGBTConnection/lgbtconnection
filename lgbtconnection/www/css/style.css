@@ -139,3 +139,21 @@ border-radius: 4px;
 .row:last-child .col {
   border-bottom: solid 1px grey;
 }
+#search-input {
+  text-align: center;
+}
+#search-bar {
+  background: none;
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  height: 40px;
+  z-index: 3;
+} 
+#search-bar .item {
+  background: none;
+  border: none;
+}
+#button-add {
+  margin-right: 0px
+}

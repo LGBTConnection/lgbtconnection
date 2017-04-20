@@ -1,18 +1,14 @@
- <ion-view view-title=" {{ user.name }} " class="messaging-view">
-    <ion-content padding="true" class="content-stable" on-tap="showTime = !showTime; focusManager.focusInputOnBlur = false;" class="padding has-subheader">
-        <div collection-repeat="message in messages"
-            ng-class="{other: message.userId == myId}" class="messages">
-            <div class="message" ng-class="{'slide-right': showTime, '': !showTime}">
-                <span collection-height="message.text" item-width="'100%'">{{ message.text }}</span>
+<ion-view view-title="Câu hỏi">          
+    <ion-content padding="true" class="has-header">
+        <div id="search-bar">
+            <div class="item item-input-inset">
+                <label class="item-input-wrapper" id="search-input">
+                    <input type="text" placeholder="Thêm câu hỏi..." ng-model="new_question">
+                </label>
+                <button class="button icon ion-ios-plus"
+                    ng-disabled="!new_question || new_question === ''" ng-click="addQuestion()">
+                </button> 
             </div>
         </div>
     </ion-content>
-    <ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
-        <label class="item-input-wrapper">
-            <input type="text" placeholder="Nhập tin nhắn" on-return="sendMessage();" ng-model="data.message" on-focus="inputUp()" on-blur="inputDown()" focus-on-blur="focusManager.focusInputOnBlur" />
-        </label>
-        <button class="button button-clear" ng-disabled="!data.message || data.message === ''" ng-click="sendMessage()">
-            Gửi
-        </button>
-    </ion-footer-bar>
 </ion-view>
