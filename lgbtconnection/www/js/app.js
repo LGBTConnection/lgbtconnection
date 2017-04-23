@@ -415,28 +415,85 @@ function deg2rad(deg) {
           console.error("Error:", error);
         });
 })
-.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $firebaseArray, $firebaseObject){
+.controller('ChatCtrl', function($rootScope, $scope, $stateParams, $firebaseArray, $firebaseObject, $ionicScrollDelegate){
 $scope.uid = $rootScope.uid;
 $scope.friend_id = $stateParams._idUser;
  $scope.ref = firebase.database().ref();
- $scope.friendRef = $scope.ref.child($scope.friend_id);
-      var obj = $firebaseObject($scope.friendRef);
-      obj.$loaded(
-        function(data) {
-          $scope.friendname = data.name;
-        },
-        function(error) {
-          console.error("Error:", error);
-        });
-var friendchat = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
-friendchat = $firebaseArray(friendchat);
-var key = friendchat.$keyAt($scope.friend_id)
-console.log(key)
+ $scope.friendRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
+$scope.own_noti = $scope.ref.child("noti/"+$scope.uid)
+var friend_noti = $scope.ref.child("noti/"+$scope.friend_id+"/"+$scope.uid)
+$scope.list_check = $scope.ref.child($scope.uid+"/list_chat");
+var list_check = $firebaseArray($scope.list_check)
+var own_noti = $firebaseArray($scope.own_noti);
+var friend_noti = $firebaseObject(friend_noti);
  var list_chat = $scope.ref.child($scope.uid+"/list_chat/"+$scope.friend_id);
  var list = $firebaseObject(list_chat);
-    list.$loaded(
+  list.$loaded(
       function(data) {
+        var obj = $firebaseArray($scope.friendRef);
+          obj.$loaded(
+            function(data_tmp) {
+              for (var item in data_tmp){
+                if (item.indexOf("$") == -1){
+                  var item_key = data_tmp[item];
+                  if (data.$id == item_key.$value){
+                    if (data.$value == null){
+                      list.$value = item_key.$id;
+                     list.$save().then(function(list_chat) {
+                          }, function(error) {
+                            console.log("Error:", error);
+                          });                                  
+                    } 
+                   }                
+                  }
+                }
+            },
+            function(error) {
+              console.error("Error:", error);
+            });
+        own_noti.$loaded(
+          function(data){
+            for (var item in data){
+              if (item.indexOf("$") == -1){
+              var user_id = data[item];
+              console.log(user_id)
+              list_check.$loaded(
+                function(data_check){
+                   for (var item_check in data_check){
+                     var user_check = data_check[item_check];
+                     var check = true;
+                     if (user_id === user_check){
+                        check =false;
+                        break;
+                     }             
+                   } 
+                   if (check == true){
+                        list.$value = user_id.$value;
+                        list.$save().then(function(list_chat) {
+                          }, function(error) {
+                            console.log("Error:", error);
+                          });                        
+                     } 
+                     own_noti.$remove(user_id).then(function(own_noti) {
+                          // data has been deleted locally and in the database
+                     }, function(error) {
+                        console.log("Error:", error);
+                     });      
+                })}
+           }
+     })
       var id_chat = data.$value;
+          friend_noti.$loaded(
+          function(data){
+              if (friend_noti.$value == null){
+                friend_noti.$value = id_chat;
+                friend_noti.$save().then(function(friend_noti) {
+                  }, function(error) {
+                    console.log("Error:", error);
+                  }); 
+              }
+            }
+        )
       $scope.chatRef = $scope.ref.child("chat/"+id_chat+"/messages");
       $scope.chatArr = $firebaseArray($scope.chatRef);
       $scope.chatArr.$loaded(
