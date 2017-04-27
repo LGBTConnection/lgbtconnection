@@ -1,4 +1,4 @@
-<ion-view view-title="Câu hỏi">          
+<ion-view view-title="Câu hỏi" class="middle_full">          
     <ion-content padding="true" class="has-header">
         <div class="row header">
           <div class="col col-75">Câu hỏi</div>
@@ -6,11 +6,11 @@
         </div>
         <div class="row" ng-repeat="item in questions.list_ques">
             <div class="col col-75">
-                <a href="#/tab/question/{{ $index }}">
+                
                 <span editable-text="item.ques" e-name="ques" e-form="rowform">
-                    {{ item.ques || 'empty' }}
+                  <a href="#/tab/question/{{ $index }}">  {{ item.ques || 'empty' }} </a>
                 </span>
-                </a>
+                
             </div>
             <div class="col">
                 <button class="button icon icon-left ion-edit" ng-click="rowform.$show()">Sửa</button>

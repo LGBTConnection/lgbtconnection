@@ -1,9 +1,9 @@
  <ion-view view-title="{{ friendname }}" class="messaging-view"> 
-    <ion-content padding="true" class="content-stable">
+    <ion-content padding="true" class="content-stable" style="padding-bottom: 50px">
         <div collection-repeat="message in messages"
         ng-class="{other: message.id == uid}"
              class="messages">
-            <div class="message" ng-class="{'slide-right': showTime, '': !showTime}">
+            <div class="message">
                 <span collection-height="message.message" item-width="'100%'">{{ message.message }}</span>
             </div>
         </div>
