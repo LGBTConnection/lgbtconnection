@@ -1,19 +1,19 @@
- <ion-view view-title=""> 
+ <ion-view view-title="" class="middle_full"> 
     <ion-content padding="true" class="content-stable">
         <div class="row header">
-          <div class="col col-60">Câu trả lời</div>
-          <div class="col col-15"></div>
+          <div class="col col-40">Câu trả lời</div>
+          <div class="col col-40"></div>
           <div class="col"></div>
         </div>
         <div class="row" ng-repeat="item in ques.ans">
-            <div class="col col-60">
+            <div class="col col-40">
                 <span editable-text="item.content" e-name="content" e-form="rowform">
                     {{ item.content || 'empty' }}
                 </span>
             </div>
-            <div class="col col-15">
+            <div class="col col-40">
                 <a href="#" editable-checkbox="item.isRight" e-name="isRight" e-title="Đúng?">
-                    {{ items.isRight && "Đúng" || "Sai" }}
+                    {{ item.isRight && "Đúng" || "Sai" }}
                 </a>
             </div>
             <div class="col">

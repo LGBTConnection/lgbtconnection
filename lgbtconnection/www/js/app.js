@@ -111,12 +111,22 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
+    
     .state('tabs.answer',{
       url: '/question/:_idQues',
       views: {
         'setting-tab':{
           templateUrl: 'templates/AnswerTemplate.html',
           controller: 'AnswerTabCtrl'
+        }
+      }
+    })
+    .state('tabs.answermatch', {
+      url: '/answermatch/:_idFriend',
+      views: {
+        'home-tab': {
+          templateUrl: 'templates/AnswermatchTemplate.html',
+          controller: 'AnswermatchTabCtrl'
         }
       }
     })
@@ -195,7 +205,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 })
 .controller('MainCtrl', function($scope, $firebaseArray){ 
 })
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray ,$state){
   $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -269,8 +279,12 @@ function deg2rad(deg) {
                                 // Match 2 nguoi voi nhau
                                 if (distance <= 50 )
                                 {
-                                   $scope.list_friend.$add(key)
-                                   console.log($scope.list_friend)
+                                  //$scope.list_friend.$add(key);
+                                   console.log($scope.list_friend);
+                                   $state.go('tabs.answermatch',{
+                                     _idFriend : key
+                                   });
+                                   console.log("Go to QuestionTemplate");     
                                 }
                             }
                         });
@@ -302,6 +316,13 @@ function deg2rad(deg) {
         console.error("Error:", error);
       }
     );
+})
+.controller('AnswermatchTabCtrl', function($rootScope, $scope, $firebaseObject, $state, $stateParams){
+      $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.userRef = $scope.ref.child($scope.uid);
+      var obj = $firebaseObject($scope.userRef);
+      $scope.idFriend = $stateParams._idFriend;
 })
 .controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;
@@ -500,6 +521,7 @@ var friend_noti = $firebaseObject(friend_noti);
         function(data) {
           $scope.messages = data;
           console.log(data);
+          $ionicScrollDelegate.scrollBottom(true);
         },
         function(error) {
           console.error("Error:", error);
@@ -521,7 +543,7 @@ $scope.showTime = true;
           console.log(ref);
           $scope.data.message = "";
     });
-   $ionicScrollDelegate.scrollBottom();
+   $ionicScrollDelegate.scrollBottom(true);
 }
   $scope.data = {};
   $scope.messages = [];
