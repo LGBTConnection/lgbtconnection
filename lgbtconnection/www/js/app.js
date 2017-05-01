@@ -111,22 +111,12 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
-    
     .state('tabs.answer',{
       url: '/question/:_idQues',
       views: {
         'setting-tab':{
           templateUrl: 'templates/AnswerTemplate.html',
           controller: 'AnswerTabCtrl'
-        }
-      }
-    })
-    .state('tabs.answermatch', {
-      url: '/answermatch/:_idFriend',
-      views: {
-        'home-tab': {
-          templateUrl: 'templates/AnswermatchTemplate.html',
-          controller: 'AnswermatchTabCtrl'
         }
       }
     })
@@ -154,13 +144,13 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
       }).catch(function(error) {
         console.error("Authentication failed:", error);
         $scope.msg = "Sai email hoặc mật khẩu!";
-        $scope.msg = error;
+        //$scope.msg = error;
       });
   }
 })
 .controller('SignUpCtrl', function($rootScope, $scope, $state, $firebaseAuth, $firebaseObject){
   $scope.msg="";
-  $scope.authObj = $firebaseAuth();
+  /*$scope.authObj = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
       if (firebaseUser) {
         console.log("Signed in as:", firebaseUser.uid);
@@ -168,7 +158,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
       } else {
         console.log("Signed out");
       }
-  
+  */
    $scope.signUp = function(user){
     if (user.password != user.confirmpassword){
             $scope.msg = "Mật khẩu không khớp với nhập lại mật khẩu";
@@ -205,7 +195,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 })
 .controller('MainCtrl', function($scope, $firebaseArray){ 
 })
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray ,$state){
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
   $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -279,12 +269,8 @@ function deg2rad(deg) {
                                 // Match 2 nguoi voi nhau
                                 if (distance <= 50 )
                                 {
-                                  //$scope.list_friend.$add(key);
-                                   console.log($scope.list_friend);
-                                   $state.go('tabs.answermatch',{
-                                     _idFriend : key
-                                   });
-                                   console.log("Go to QuestionTemplate");     
+                                   $scope.list_friend.$add(key)
+                                   console.log($scope.list_friend)
                                 }
                             }
                         });
@@ -316,13 +302,6 @@ function deg2rad(deg) {
         console.error("Error:", error);
       }
     );
-})
-.controller('AnswermatchTabCtrl', function($rootScope, $scope, $firebaseObject, $state, $stateParams){
-      $scope.uid = $rootScope.uid;
-      $scope.ref = firebase.database().ref();
-      $scope.userRef = $scope.ref.child($scope.uid);
-      var obj = $firebaseObject($scope.userRef);
-      $scope.idFriend = $stateParams._idFriend;
 })
 .controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;
@@ -520,7 +499,7 @@ var friend_noti = $firebaseObject(friend_noti);
       $scope.chatArr.$loaded(
         function(data) {
           $scope.messages = data;
-          console.log(data);
+          console.log(data);          
           $ionicScrollDelegate.scrollBottom(true);
         },
         function(error) {
@@ -532,7 +511,6 @@ var friend_noti = $firebaseObject(friend_noti);
         console.error("Error:", error);
       }
     );
-$scope.showTime = true;
   $scope.sendMessage = function() {
     $scope.chatArr.$add(
           {
@@ -543,7 +521,6 @@ $scope.showTime = true;
           console.log(ref);
           $scope.data.message = "";
     });
-   $ionicScrollDelegate.scrollBottom(true);
 }
   $scope.data = {};
   $scope.messages = [];
