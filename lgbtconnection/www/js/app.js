@@ -120,6 +120,15 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
+    .state('tabs.answermatch',{
+      url: '/answermatch/:_idFriend',
+      views: {
+        'home-tab':{
+          templateUrl: 'templates/AnswermatchTemplate.html',
+          controller: 'AnswermatchTabCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
@@ -195,7 +204,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 })
 .controller('MainCtrl', function($scope, $firebaseArray){ 
 })
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray){
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray, $state){
   $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -243,14 +252,14 @@ function deg2rad(deg) {
       }
     );
         $scope.findFriend = function(){
+        //  alert("Home");
+          $scope.msg = "Đang tìm kiếm.....";
            var posOptions = {timeout: 10000, enableHighAccuracy: false};
             $cordovaGeolocation
             .getCurrentPosition(posOptions)
-            
             .then(function (position) {
                 var lat  = position.coords.latitude
-                var long = position.coords.longitude
-                //alert(lat + '   ' + long)
+                var long = position.coords.longitud
                 console.log(lat + '   ' + long)
                 obj.lat = lat;
                 obj.lng = long;
@@ -269,8 +278,32 @@ function deg2rad(deg) {
                                 // Match 2 nguoi voi nhau
                                 if (distance <= 50 )
                                 {
-                                   $scope.list_friend.$add(key)
-                                   console.log($scope.list_friend)
+                                   //$scope.list_friend.$add(key)
+                                 
+                                     $scope.userRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
+                                      var list = $firebaseArray($scope.userRef);
+                                      list.$loaded(
+                                        function(data) {
+                                            var check=true
+                                          //console.log($scope.list_friend);
+                                          for (var item in data){
+                                             if (item.indexOf("$") == -1){
+                                            var f_id = data[item];
+                                            console.log(f_id.$value)
+                                            console.log(key)
+                                            if (f_id.$value===key)
+                                            {
+                                              check=false;
+                                              break;
+                                            }}}
+                                            console.log(check)
+                                            //if (check===true)
+                                            //{
+                                                $state.go('tabs.answermatch', 
+                                                {_idFriend : key})
+                                                console.log($scope.list_friend)
+                                            //}
+                                          })                              
                                 }
                             }
                         });
@@ -296,12 +329,27 @@ function deg2rad(deg) {
     obj.$loaded(
       function(data) {
         //$scope.user = data;
-        obj.$bindTo($scope, "user");
+        obj.$bindTo($scope, id);
       },
       function(error) {
         console.error("Error:", error);
       }
     );
+})
+.controller('AnswermatchTabCtrl', function($rootScope, $scope, $firebaseObject, $stateParams, $firebaseArray){
+      $scope.uid = $rootScope.uid;
+      $scope.ref = firebase.database().ref();
+      $scope.idFriend = $stateParams._idFriend;
+      $scope.userRef = $scope.ref.child("questions/"+$scope.idFriend);
+      var obj = $firebaseObject($scope.userRef)
+      obj.$loaded().then(function() {
+        $scope.questions = obj;
+        obj.$bindTo($scope, "questions");
+        console.log($scope.questions);
+        obj.$bindTo($scope, "ques");
+      });
+      $scope.checkId = function(index) {console.log(index);}
+
 })
 .controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;

@@ -1,12 +1,21 @@
-<ion-view view-title="Trả lời câu hỏi" class="middle_full"> 
-    <ion-content padding="true" class="content-stable">
-        <div class="list" ng-repeat="item in list_ques">
-                <div class="row" ng-repeat="item in questions.list_ques">
+<ion-view view-title="Câu hỏi" class="middle_full">          
+    <ion-content padding="true" class="has-header">
+        <h2> Chọn đáp án đúng</h2>
+        <div  ng-repeat="item in questions.list_ques">
                 <span editable-text="item.ques" e-name="ques" e-form="rowform">
-                  <a href="#/tab/question/{{ $index }}">  {{ item.ques || 'empty' }} </a>
+                 <h3> {{ item.ques || 'empty' }}  </h3>
                 </span>
-                </div>
-        </div>
-        {{ idFriend }}   
+                <div ng-repeat="item in item.ans">
+                    <!--<div class="col col-40">-->
+                        <ion-checkbox id="check" ng-click="checkId($index)" >
+                        <span editable-text="item.content" e-name="content" e-form="rowform">
+                           {{ item.content || 'empty' }}
+                        </span>
+                        </ion-checkbox>
+                   <!-- </div> -->
+                   </div> 
+                </div>        
+        </div>  
+        <button class="button button-positive icon icon-right ion-arrow-right-a" ng-click="ansques()">OK</button>
     </ion-content>
 </ion-view>

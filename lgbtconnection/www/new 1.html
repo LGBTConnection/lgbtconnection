@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('MyApp', [])
+        app.controller('MyController', function ($scope, $window) {
+            $scope.CheckPassport = function () {
+                if ($scope.HasPassport) {
+                    $window.alert("CheckBox is checked.");
+                } else {
+                    $window.alert("CheckBox is not checked.");
+                }
+            };
+        });
+    </script>
+    <div ng-app="MyApp" ng-controller="MyController">
+        Do you have Passport?
+        <label for="chkPassport">
+            <input id="chkPassport" type="checkbox" ng-model="HasPassport" />
+        </label>
+        <input type="button" value = "Check Passport" ng-click = "CheckPassport()" />
+    </div>
+</body>
+</html>
