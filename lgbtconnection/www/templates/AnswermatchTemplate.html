@@ -1,21 +1,22 @@
 <ion-view view-title="Câu hỏi" class="middle_full">          
-    <ion-content padding="true" class="has-header">
-        <h2> Chọn đáp án đúng</h2>
-        <div  ng-repeat="item in questions.list_ques">
+    <ion-content padding="true" has-header="true">
+        <div>
+        <h2> Chọn đáp án đúng để kết nối với {{ msg }}</h2>
+        <div ng-repeat="item in questions.list_ques" ng-init="id_question = $index">
                 <span editable-text="item.ques" e-name="ques" e-form="rowform">
                  <h3> {{ item.ques || 'empty' }}  </h3>
                 </span>
                 <div ng-repeat="item in item.ans">
                     <!--<div class="col col-40">-->
-                        <ion-checkbox id="check" ng-click="checkId($index)" >
+                        <ion-checkbox id="check" ng-model="checkVal" ng-click="checkId(id_question, $index, checkVal)" >
                         <span editable-text="item.content" e-name="content" e-form="rowform">
                            {{ item.content || 'empty' }}
                         </span>
                         </ion-checkbox>
                    <!-- </div> -->
-                   </div> 
-                </div>        
-        </div>  
+                </div> 
+            </div>        
         <button class="button button-positive icon icon-right ion-arrow-right-a" ng-click="ansques()">OK</button>
+        </div>
     </ion-content>
 </ion-view>

@@ -75,6 +75,15 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
+    .state('tabs.answermatch',{
+      url: '/answermatch/:_idFriend',
+      views: {
+        'home-tab':{
+          templateUrl: 'templates/AnswermatchTemplate.html',
+          controller: 'AnswermatchTabCtrl'
+        }
+      }
+    })
     .state('tabs.friend', {
       url: '/friend',
       views: {
@@ -120,15 +129,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         }
       }
     })
-    .state('tabs.answermatch',{
-      url: '/answermatch/:_idFriend',
-      views: {
-        'home-tab':{
-          templateUrl: 'templates/AnswermatchTemplate.html',
-          controller: 'AnswermatchTabCtrl'
-        }
-      }
-    })
+    
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/sign-in');
 
@@ -159,7 +160,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 })
 .controller('SignUpCtrl', function($rootScope, $scope, $state, $firebaseAuth, $firebaseObject){
   $scope.msg="";
-  /*$scope.authObj = $firebaseAuth();
+  $scope.authObj = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
       if (firebaseUser) {
         console.log("Signed in as:", firebaseUser.uid);
@@ -167,7 +168,6 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
       } else {
         console.log("Signed out");
       }
-  */
    $scope.signUp = function(user){
     if (user.password != user.confirmpassword){
             $scope.msg = "Mật khẩu không khớp với nhập lại mật khẩu";
@@ -204,7 +204,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 })
 .controller('MainCtrl', function($scope, $firebaseArray){ 
 })
-.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray, $state){
+.controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray, $state, $ionicLoading){
   $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
@@ -218,7 +218,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
         console.error("Error:", error);
       }
     );
-  function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
+function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1); 
@@ -235,6 +235,7 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
+                                                
         $scope.uid = $rootScope.uid;
         $scope.ref = firebase.database().ref();
         $scope.userRef = $scope.ref.child("location/"+$rootScope.uid);
@@ -251,6 +252,8 @@ function deg2rad(deg) {
         console.error("Error:", error);
       }
     );
+    $scope.key_match;
+    $scope.matched = false;
         $scope.findFriend = function(){
         //  alert("Home");
           $scope.msg = "Đang tìm kiếm.....";
@@ -259,18 +262,17 @@ function deg2rad(deg) {
             .getCurrentPosition(posOptions)
             .then(function (position) {
                 var lat  = position.coords.latitude
-                var long = position.coords.longitud
-                console.log(lat + '   ' + long)
+                var long = position.coords.longitude
                 obj.lat = lat;
                 obj.lng = long;
                 obj.$save().then(function(ref) {
                       $scope.locationRef = $scope.ref.child("location");
                       $scope.objLocation = $firebaseObject($scope.locationRef);
                       $scope.objLocation.$loaded(
-                        function(data) {
-                          console.log(data);
+                      function(data) {
                       angular.forEach(data, function(value, key) {
                           var f_lat, f_lng, distance;
+                          $scope.msg = key;
                             if (key != $scope.uid){
                                 f_lat = value.lat
                                 f_lng = value.lng
@@ -278,47 +280,42 @@ function deg2rad(deg) {
                                 // Match 2 nguoi voi nhau
                                 if (distance <= 50 )
                                 {
-                                   //$scope.list_friend.$add(key)
-                                 
-                                     $scope.userRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
-                                      var list = $firebaseArray($scope.userRef);
-                                      list.$loaded(
-                                        function(data) {
-                                            var check=true
-                                          //console.log($scope.list_friend);
-                                          for (var item in data){
-                                             if (item.indexOf("$") == -1){
+                                  $scope.msg = "Found: " + key
+                                  $scope.matched = true;
+                                  $scope.key_match = key;
+                                  var data = $scope.list_friend
+                                    for (var item in data){
+                                        if (item.indexOf("$") == -1){
                                             var f_id = data[item];
-                                            console.log(f_id.$value)
-                                            console.log(key)
                                             if (f_id.$value===key)
                                             {
-                                              check=false;
+                                              $scope.matched == false;
                                               break;
-                                            }}}
-                                            console.log(check)
-                                            //if (check===true)
-                                            //{
-                                                $state.go('tabs.answermatch', 
-                                                {_idFriend : key})
-                                                console.log($scope.list_friend)
-                                            //}
-                                          })                              
+                                            }
+                                          }
+                                      }
+                                                              
                                 }
+                              if ($scope.matched == true) return;
                             }
                         });
+                        if ($scope.matched == true){
+                            $scope.msg = "Da tim thay"
+                            $state.go('tabs.answermatch',{_idFriend : $scope.key_match})
+                        }
                         },
                         function(error) {
-                          console.error("Error:", error);
+                          alert("Error: " + error);
                         }
                       );
                       
                   }, function(error) {
-                    console.log("Error:", error);
+                    alert("Error:" + error);
                   });
             }, function(err) {
-                console.log(err)
+                alert(err)
             });
+            $scope.msg = "";
         }
 })
 .controller('ProfileTabCtrl', function($rootScope, $scope, $firebaseObject){
@@ -326,17 +323,19 @@ function deg2rad(deg) {
       $scope.ref = firebase.database().ref();
       $scope.userRef = $scope.ref.child($scope.uid);
       var obj = $firebaseObject($scope.userRef);
-    obj.$loaded(
-      function(data) {
-        //$scope.user = data;
-        obj.$bindTo($scope, id);
-      },
-      function(error) {
-        console.error("Error:", error);
-      }
-    );
+      obj.$loaded(
+        function(data) {
+        },
+        function(error) {
+          console.error("Error:", error);
+        }
+      );
+     $scope.user = obj;
+
+     // For three-way data bindings, bind it to the scope instead
+     obj.$bindTo($scope, "user");
 })
-.controller('AnswermatchTabCtrl', function($rootScope, $scope, $firebaseObject, $stateParams, $firebaseArray){
+.controller('AnswermatchTabCtrl', function($rootScope, $scope, $firebaseObject, $state,  $stateParams, $firebaseArray){
       $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
       $scope.idFriend = $stateParams._idFriend;
@@ -348,7 +347,42 @@ function deg2rad(deg) {
         console.log($scope.questions);
         obj.$bindTo($scope, "ques");
       });
-      $scope.checkId = function(index) {console.log(index);}
+      $scope.userRef1 = $scope.ref.child($scope.idFriend);
+      var obj1 = $firebaseObject($scope.userRef1);
+      $scope.msg = obj1.name;
+      $scope.answer_array = [];
+      $scope.checkId = function(id_question, id_answer, checkVal) {
+        var check = false;
+        console.log(id_question + ' ' + id_answer + ' ' + checkVal);
+        if (!Array.isArray($scope.answer_array[id_question]))
+          $scope.answer_array[id_question] = [];
+        $scope.answer_array[id_question][id_answer] = checkVal;
+      }
+      $scope.ansques = function(){
+        console.log($scope.answer_array)
+        var list_ques = $scope.questions.list_ques
+        var countRight = 0;
+        var count = 0;
+        for (i=0; i < list_ques.length; i++){
+          for (j=0; j < list_ques[i].ans.length; j++){
+            var val;
+            count++;
+            if (!Array.isArray($scope.answer_array[i]))
+              $scope.answer_array[i] = [];
+            if (!$scope.answer_array[i][j] || $scope.answer_array[i][j] == false)
+              val = false;
+            if ($scope.answer_array[i][j] == true)
+              val = true;
+            if (val == list_ques[i].ans[j].isRight)
+              countRight++;
+          }
+        }
+        if ((1.0*countRight / 1.0*count)*100 >= 80){
+           $scope.userRef = $scope.ref.child("friend/"+$scope.uid);
+           $state.go('tabs.chat',{_idUser : $scope.idFriend})
+           console.log(132);
+        }
+      }
 
 })
 .controller('QuestionTabCtrl', function($rootScope, $scope, $firebaseObject){

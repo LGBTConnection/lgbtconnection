@@ -2,18 +2,18 @@
   "_args": [
     [
       {
-        "raw": "angularfire",
+        "raw": "angularfire@^2.3.0",
         "scope": null,
         "escapedName": "angularfire",
         "name": "angularfire",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
+        "rawSpec": "^2.3.0",
+        "spec": ">=2.3.0 <3.0.0",
+        "type": "range"
       },
       "E:\\LGBT Connection\\lgbtconnection\\lgbtconnection"
     ]
   ],
-  "_from": "angularfire@latest",
+  "_from": "angularfire@>=2.3.0 <3.0.0",
   "_id": "angularfire@2.3.0",
   "_inCache": true,
   "_location": "/angularfire",
@@ -29,13 +29,13 @@
   "_npmVersion": "3.10.8",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "angularfire",
+    "raw": "angularfire@^2.3.0",
     "scope": null,
     "escapedName": "angularfire",
     "name": "angularfire",
-    "rawSpec": "",
-    "spec": "latest",
-    "type": "tag"
+    "rawSpec": "^2.3.0",
+    "spec": ">=2.3.0 <3.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "#USER",
@@ -44,7 +44,7 @@
   "_resolved": "https://registry.npmjs.org/angularfire/-/angularfire-2.3.0.tgz",
   "_shasum": "c152d12b655cd21a039956015c7dcdfcc4f25da5",
   "_shrinkwrap": null,
-  "_spec": "angularfire",
+  "_spec": "angularfire@^2.3.0",
   "_where": "E:\\LGBT Connection\\lgbtconnection\\lgbtconnection",
   "author": {
     "name": "Firebase",

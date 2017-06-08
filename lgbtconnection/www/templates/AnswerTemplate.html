@@ -6,12 +6,12 @@
           <div class="col"></div>
         </div>
         <div class="row" ng-repeat="item in ques.ans">
-            <div class="col col-30">
+            <div class="col col-40">
                 <span editable-text="item.content" e-name="content" e-form="rowform">
                     {{ item.content || 'empty' }}
                 </span>
             </div>
-            <div class="col col-40">
+            <div class="col col-30">
                 <a href="#" editable-checkbox="item.isRight" e-name="isRight" e-title="Đúng?">
                     {{ item.isRight && "Đúng" || "Sai" }}
                 </a>
