@@ -162,12 +162,12 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
   $scope.msg="";
   $scope.authObj = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
-      if (firebaseUser) {
+      /*if (firebaseUser) {
         console.log("Signed in as:", firebaseUser.uid);
           $state.go('tabs.home');
       } else {
         console.log("Signed out");
-      }
+      }*/
    $scope.signUp = function(user){
     if (user.password != user.confirmpassword){
             $scope.msg = "Mật khẩu không khớp với nhập lại mật khẩu";
@@ -378,9 +378,47 @@ function deg2rad(deg) {
           }
         }
         if ((1.0*countRight / 1.0*count)*100 >= 80){
-           $scope.userRef = $scope.ref.child("friend/"+$scope.uid);
+           $scope.userRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
+           $scope.friendRef = $scope.ref.child("friend/"+$scope.idFriend+"/list_friend")
+           $scope.userRef = $firebaseArray($scope.userRef);
+           $scope.friendRef = $firebaseArray($scope.friendRef);
+           $scope.userRef.$loaded(
+             function(data) {
+              var check = true;
+              for (var item in data){
+                if (item.indexOf("$") == -1){
+                  var item_key = data[item];
+                  if ($scope.idFriend == item_key.$value){
+                    check = false;
+                    break;
+                  }                
+                }
+              }
+              if (check==true){                  
+                $scope.userRef.$add($scope.idFriend);
+              }
+            }, function(error) {
+              console.error("Error:", error);
+            });
+            $scope.friendRef.$loaded(
+             function(data) {
+              var check = true;
+              for (var item in data){
+                if (item.indexOf("$") == -1){
+                  var item_key = data[item];
+                  if ($scope.uid == item_key.$value){
+                    check = false;
+                    break;
+                  }                
+                }
+              }
+              if (check==true){                  
+                $scope.friendRef.$add($scope.uid);
+              }
+            }, function(error) {
+              console.error("Error:", error);
+            });
            $state.go('tabs.chat',{_idUser : $scope.idFriend})
-           console.log(132);
         }
       }
 
