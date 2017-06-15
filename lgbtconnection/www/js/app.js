@@ -241,19 +241,10 @@ function deg2rad(deg) {
         $scope.userRef = $scope.ref.child("location/"+$rootScope.uid);
         var obj = $firebaseObject($scope.userRef);
         $scope.friendRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
-        $scope.list_friend = $firebaseArray($scope.friendRef);
-        
+        $scope.list_friend = $firebaseArray($scope.friendRef);        
         $scope.list_friend.$loaded(
-        function(data) {
-        //list.$bindTo($scope, "list_friend");
-        console.log($scope.list_friend)
-      },
-      function(error) {
-        console.error("Error:", error);
-      }
-    );
-    $scope.key_match;
-    $scope.matched = false;
+        function(data_tmp) {
+        $scope.matched = false;
         $scope.findFriend = function(){
         //  alert("Home");
           $scope.msg = "Đang tìm kiếm.....";
@@ -272,7 +263,7 @@ function deg2rad(deg) {
                       function(data) {
                       angular.forEach(data, function(value, key) {
                           var f_lat, f_lng, distance;
-                          $scope.msg = key;
+                          //$scope.msg = key;
                             if (key != $scope.uid){
                                 f_lat = value.lat
                                 f_lng = value.lng
@@ -280,28 +271,32 @@ function deg2rad(deg) {
                                 // Match 2 nguoi voi nhau
                                 if (distance <= 50 )
                                 {
-                                  $scope.msg = "Found: " + key
                                   $scope.matched = true;
                                   $scope.key_match = key;
-                                  var data = $scope.list_friend
-                                    for (var item in data){
+                                    for (var item in data_tmp){
                                         if (item.indexOf("$") == -1){
-                                            var f_id = data[item];
+                                            var f_id = data_tmp[item];
                                             if (f_id.$value===key)
                                             {
-                                              $scope.matched == false;
+                                              $scope.matched = false;
                                               break;
                                             }
                                           }
                                       }
                                                               
                                 }
+                                else {
+                                  $scope.msg = "Không tìm thấy"
+                                }
                               if ($scope.matched == true) return;
                             }
                         });
                         if ($scope.matched == true){
-                            $scope.msg = "Da tim thay"
+                            $scope.msg = "Đã tìm thấy"
                             $state.go('tabs.answermatch',{_idFriend : $scope.key_match})
+                        }
+                        else{
+                            $scope.msg = "Không tìm thấy" 
                         }
                         },
                         function(error) {
@@ -317,6 +312,11 @@ function deg2rad(deg) {
             });
             $scope.msg = "";
         }
+      },
+      function(error) {
+        console.error("Error:", error);
+      }
+    );
 })
 .controller('ProfileTabCtrl', function($rootScope, $scope, $firebaseObject){
       $scope.uid = $rootScope.uid;
@@ -381,44 +381,13 @@ function deg2rad(deg) {
            $scope.userRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
            $scope.friendRef = $scope.ref.child("friend/"+$scope.idFriend+"/list_friend")
            $scope.userRef = $firebaseArray($scope.userRef);
-           $scope.friendRef = $firebaseArray($scope.friendRef);
-           $scope.userRef.$loaded(
-             function(data) {
-              var check = true;
-              for (var item in data){
-                if (item.indexOf("$") == -1){
-                  var item_key = data[item];
-                  if ($scope.idFriend == item_key.$value){
-                    check = false;
-                    break;
-                  }                
-                }
-              }
-              if (check==true){                  
-                $scope.userRef.$add($scope.idFriend);
-              }
-            }, function(error) {
-              console.error("Error:", error);
-            });
-            $scope.friendRef.$loaded(
-             function(data) {
-              var check = true;
-              for (var item in data){
-                if (item.indexOf("$") == -1){
-                  var item_key = data[item];
-                  if ($scope.uid == item_key.$value){
-                    check = false;
-                    break;
-                  }                
-                }
-              }
-              if (check==true){                  
-                $scope.friendRef.$add($scope.uid);
-              }
-            }, function(error) {
-              console.error("Error:", error);
-            });
+           $scope.friendRef = $firebaseArray($scope.friendRef);           
+           $scope.userRef.$add($scope.idFriend);           
+           $scope.friendRef.$add($scope.uid);
            $state.go('tabs.chat',{_idUser : $scope.idFriend})
+        }
+        else {
+          $stateParams.go('tabs.home');
         }
       }
 
