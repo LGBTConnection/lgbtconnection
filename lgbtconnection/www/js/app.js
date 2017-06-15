@@ -205,8 +205,9 @@ angular.module('starter', ['ionic', 'firebase', 'xeditable', 'ngCordova'])
 .controller('MainCtrl', function($scope, $firebaseArray){ 
 })
 .controller('HomeTabCtrl', function($rootScope, $scope, $cordovaGeolocation, $firebaseObject, $firebaseArray, $state, $ionicLoading){
-  $scope.uid = $rootScope.uid;
+      $scope.uid = $rootScope.uid;
       $scope.ref = firebase.database().ref();
+      $scope.msg = "";
       $scope.userRef = $scope.ref.child($scope.uid);
       console.log($rootScope.uid);
       var obj = $firebaseObject($scope.userRef);
@@ -247,6 +248,8 @@ function deg2rad(deg) {
         $scope.matched = false;
         $scope.findFriend = function(){
         //  alert("Home");
+        if ($scope.msg != "Đã tìm thấy")
+        {
           $scope.msg = "Đang tìm kiếm.....";
            var posOptions = {timeout: 10000, enableHighAccuracy: false};
             $cordovaGeolocation
@@ -286,7 +289,7 @@ function deg2rad(deg) {
                                                               
                                 }
                                 else {
-                                  $scope.msg = "Không tìm thấy"
+                                  $scope.msg = "Đang tìm kiếm......"
                                 }
                               if ($scope.matched == true) return;
                             }
@@ -296,7 +299,7 @@ function deg2rad(deg) {
                             $state.go('tabs.answermatch',{_idFriend : $scope.key_match})
                         }
                         else{
-                            $scope.msg = "Không tìm thấy" 
+                            $scope.msg = "Không tìm thấy người nào" 
                         }
                         },
                         function(error) {
@@ -311,11 +314,12 @@ function deg2rad(deg) {
                 alert(err)
             });
             $scope.msg = "";
-        }
+        } else $scope.msg = "Đang tìm kiếm......"
       },
       function(error) {
         console.error("Error:", error);
       }
+        }
     );
 })
 .controller('ProfileTabCtrl', function($rootScope, $scope, $firebaseObject){
@@ -340,6 +344,11 @@ function deg2rad(deg) {
       $scope.ref = firebase.database().ref();
       $scope.idFriend = $stateParams._idFriend;
       $scope.userRef = $scope.ref.child("questions/"+$scope.idFriend);
+      $scope.userRef1 = $scope.ref.child($scope.idFriend);
+      var obj1 = $firebaseObject($scope.userRef1)
+      obj1.$loaded().then(function() {
+      $scope.msg=obj1.name;
+      });
       var obj = $firebaseObject($scope.userRef)
       obj.$loaded().then(function() {
         $scope.questions = obj;
@@ -364,6 +373,8 @@ function deg2rad(deg) {
         var countRight = 0;
         var count = 0;
         for (i=0; i < list_ques.length; i++){
+          if (list_ques[i].ans !== undefined ) 
+          {
           for (j=0; j < list_ques[i].ans.length; j++){
             var val;
             count++;
@@ -376,8 +387,9 @@ function deg2rad(deg) {
             if (val == list_ques[i].ans[j].isRight)
               countRight++;
           }
+          }
         }
-        if ((1.0*countRight / 1.0*count)*100 >= 80){
+        if ((1.0*countRight / 1.0*count)*100 >= 90){
            $scope.userRef = $scope.ref.child("friend/"+$scope.uid+"/list_friend");
            $scope.friendRef = $scope.ref.child("friend/"+$scope.idFriend+"/list_friend")
            $scope.userRef = $firebaseArray($scope.userRef);
